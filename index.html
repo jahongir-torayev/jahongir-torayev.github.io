@@ -1,377 +1,320 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Live Internet Speed Monitor</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Desktop Only</title>
   <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background: #0b1220; color: #e7eefc; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 20px; }
-    .card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:      #2E6B52;
+      --green-mid:  #3d8a67;
+      --green-pale: #eaf6ef;
+      --green-soft: #d4ede0;
+      --ink:        #1a2b24;
+      --muted:      #5a7a6a;
+      --border:     #cde3d7;
+      --white:      #ffffff;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     }
-    h1 { margin: 0 0 10px; font-size: 18px; font-weight: 700; }
-    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .stat { padding: 14px; border-radius: 12px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); }
-    .label { font-size: 12px; opacity: 0.8; }
-    .value { font-size: 22px; font-weight: 800; margin-top: 6px; }
-    .unit { font-size: 12px; opacity: 0.8; margin-left: 6px; font-weight: 600; }
-    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
-    button {
-      background: #2b63ff; color: white; border: 0; padding: 10px 14px;
-      border-radius: 10px; font-weight: 700; cursor: pointer;
+
+    /* ══════════════════════════
+       MOBILE WALL
+    ══════════════════════════ */
+    #mw {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--white);
+      flex-direction: column;
+      font-family: var(--font);
     }
-    button.secondary { background: rgba(255,255,255,0.10); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .small { font-size: 12px; opacity: 0.85; }
-    .bar {
-      height: 10px; border-radius: 999px; overflow: hidden;
-      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.10);
+
+    /* green top stripe */
+    .mw-stripe {
+      height: 5px;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    /* header */
+    .mw-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .mw-crest {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+    }
+
+    .mw-header-info { display: flex; flex-direction: column; gap: 1px; }
+
+    .mw-header-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .mw-header-sub {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* body */
+    .mw-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 24px;
+      text-align: center;
+      background: var(--white);
+    }
+
+    /* icon box */
+    .mw-icon-box {
+      width: 80px;
+      height: 80px;
+      background: var(--green-pale);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .mw-icon-box svg { width: 38px; height: 38px; }
+
+    .mw-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green);
+      background: var(--green-pale);
+      border: 1px solid var(--green-soft);
+      border-radius: 4px;
+      padding: 3px 10px;
+      margin-bottom: 14px;
+    }
+
+    .mw-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .mw-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 28ch;
+      margin: 0 auto 24px;
+    }
+
+    /* divider */
+    .mw-divider {
       width: 100%;
+      max-width: 300px;
+      height: 1px;
+      background: var(--border);
+      margin: 0 auto 20px;
     }
-    .bar > div { height: 100%; width: 0%; background: linear-gradient(90deg,#2b63ff,#42e3ff); transition: width 0.35s ease; }
-    canvas { width: 100%; height: 220px; margin-top: 14px; background: rgba(0,0,0,0.18); border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
-    .warn { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 179, 0, 0.12); border: 1px solid rgba(255, 179, 0, 0.25); }
-    @media (max-width: 820px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* steps */
+    .mw-steps {
+      width: 100%;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .mw-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .mw-step-n {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--white);
+      margin-top: 1px;
+    }
+
+    .mw-step-text {
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    /* footer */
+    .mw-footer {
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-shrink: 0;
+      background: var(--green-pale);
+    }
+
+    .mw-footer-line {
+      width: 1px;
+      height: 12px;
+      background: var(--border);
+    }
+
+    .mw-footer p {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ══════════════════════════
+       DESKTOP CONTENT
+    ══════════════════════════ */
+    body {
+      font-family: var(--font);
+      background: var(--green-pale);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .desktop-content { text-align: center; padding: 3rem; }
+
+    .desktop-content h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .desktop-content p { color: var(--muted); font-size: 1rem; }
+
+    /* ══════════════════════════
+       BREAKPOINT
+    ══════════════════════════ */
+    @media (max-width: 768px) {
+      #mw              { display: flex; }
+      .desktop-content { display: none; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Live Internet Speed Monitor (Browser)</h1>
 
-      <div class="grid">
-        <div class="stat">
-          <div class="label">Download</div>
-          <div class="value"><span id="dl">—</span><span class="unit">Mbps</span></div>
-          <div class="bar"><div id="dlBar"></div></div>
-        </div>
-        <div class="stat">
-          <div class="label">Upload</div>
-          <div class="value"><span id="ul">—</span><span class="unit">Mbps</span></div>
-          <div class="bar"><div id="ulBar"></div></div>
-        </div>
-        <div class="stat">
-          <div class="label">Ping</div>
-          <div class="value"><span id="ping">—</span><span class="unit">ms</span></div>
-          <div class="small">Jitter: <span id="jitter">—</span> ms</div>
-        </div>
-        <div class="stat">
-          <div class="label">Status</div>
-          <div class="value" style="font-size:16px">
-            <span id="status">Idle</span>
-          </div>
-          <div class="small">Last update: <span id="last">—</span></div>
-        </div>
-      </div>
+  <!-- ░░ MOBILE WALL ░░ -->
+  <div id="mw">
 
-      <canvas id="chart" width="980" height="220"></canvas>
+    <div class="mw-stripe"></div>
 
-      <div class="row">
-        <button id="start">Start</button>
-        <button id="stop" class="secondary" disabled>Stop</button>
-
-        <span class="small">Interval:</span>
-        <select id="interval" class="secondary" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.08);color:#e7eefc">
-          <option value="1000">1s</option>
-          <option value="2000">2s</option>
-          <option value="3000">3s</option>
-          <option value="5000" selected>5s</option>
-          <option value="10000">10s</option>
-        </select>
-
-        <span class="small">Target max (for bars):</span>
-        <input id="maxMbps" type="number" value="200" min="1" step="10"
-               style="width:90px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.08);color:#e7eefc" />
-        <span class="small">Mbps</span>
-      </div>
-
-      <div class="warn small">
-        <b>Eslatma:</b> Bu brauzer ichida “taxminiy” o‘lchov. Natija server, cache va brauzer cheklovlariga bog‘liq.
-        Eng realistik natija uchun sahifani HTTPSda serve qiling va background download/upload bloklanmagan bo‘lsin.
+    <!-- header -->
+    <div class="mw-header">
+      <!-- University crest SVG -->
+      <svg class="mw-crest" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="6" fill="#2E6B52"/>
+        <path d="M16 5 L24 9.5 V10.5 L16 15 L8 10.5 V9.5 Z" fill="white"/>
+        <path d="M10 12 V19.5 Q16 22 22 19.5 V12" stroke="white" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="24" y1="10" x2="24" y2="21" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="24" cy="22.5" r="1.5" fill="white"/>
+      </svg>
+      <div class="mw-header-info">
+        <span class="mw-header-name">Universitet Portali</span>
+        <span class="mw-header-sub">Akademik axborot tizimi</span>
       </div>
     </div>
+
+    <!-- body -->
+    <div class="mw-body">
+
+      <div class="mw-icon-box">
+        <svg viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- monitor -->
+          <rect x="1" y="3" width="26" height="20" rx="2.5" stroke="#2E6B52" stroke-width="1.8"/>
+          <rect x="4" y="6" width="20" height="13" rx="1" fill="#c3e8d5"/>
+          <rect x="6.5" y="9" width="8" height="2" rx="1" fill="#2E6B52" opacity="0.7"/>
+          <rect x="6.5" y="13" width="15" height="1.5" rx="0.75" fill="#2E6B52" opacity="0.3"/>
+          <rect x="6.5" y="16" width="11" height="1.5" rx="0.75" fill="#2E6B52" opacity="0.2"/>
+          <rect x="11" y="23" width="6" height="4" rx="1" fill="#3d8a67" opacity="0.5"/>
+          <rect x="7" y="27" width="14" height="2.5" rx="1.25" fill="#3d8a67" opacity="0.4"/>
+          <!-- phone -->
+          <rect x="29" y="15" width="8" height="14" rx="2" stroke="#2E6B52" stroke-width="1.6" opacity="0.25"/>
+          <!-- red cross -->
+          <line x1="27" y1="13" x2="38" y2="31" stroke="#c0392b" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <span class="mw-tag">Faqat desktop</span>
+
+      <h2 class="mw-title">Kompyuterdan kirish talab qilinadi</h2>
+
+      <p class="mw-desc">
+        Bu akademik tizim katta ekran va to'liq brauzer imkoniyatlarini talab qiladi.
+      </p>
+
+      <div class="mw-divider"></div>
+
+      <div class="mw-steps">
+        <div class="mw-step">
+          <span class="mw-step-n">1</span>
+          <span class="mw-step-text">Shaxsiy kompyuter yoki noutbukni yoqing</span>
+        </div>
+        <div class="mw-step">
+          <span class="mw-step-n">2</span>
+          <span class="mw-step-text">Brauzerda portal manzilini kiriting</span>
+        </div>
+        <div class="mw-step">
+          <span class="mw-step-n">3</span>
+          <span class="mw-step-text">Tizimga kiring va ishlashni boshlang</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <div class="mw-footer">
+      <p>Minimal kenglik: 769px</p>
+      <div class="mw-footer-line"></div>
+      <p>Tavsiya etilgan: 1280px va undan katta</p>
+    </div>
+
   </div>
 
-<script>
-(() => {
-  // ==== UI refs ====
-  const $ = (id) => document.getElementById(id);
-  const dlEl = $("dl"), ulEl = $("ul"), pingEl = $("ping"), jitterEl = $("jitter");
-  const statusEl = $("status"), lastEl = $("last");
-  const startBtn = $("start"), stopBtn = $("stop");
-  const intervalSel = $("interval"), maxMbpsInp = $("maxMbps");
-  const dlBar = $("dlBar"), ulBar = $("ulBar");
-  const canvas = $("chart"), ctx = canvas.getContext("2d");
+  <!-- ░░ DESKTOP CONTENT ░░ -->
+  <div class="desktop-content">
+    <h1>Sahifa Kontenti</h1>
+    <p>Bu yerga o'z contentingizni qo'ying.</p>
+  </div>
 
-  // ==== Config ====
-  // Download test uses a public file that supports CORS (usually). If it fails, fallback URLs are tried.
-  const DL_URLS = [
-    "https://speed.cloudflare.com/__down?bytes=2500000",   // Cloudflare speed endpoint
-    "https://speed.hetzner.de/10MB.bin",                   // may be blocked by CORS in some browsers
-  ];
-  // Ping uses a lightweight endpoint (no-cors to avoid CORS issues; timing still works).
-  const PING_URL = "https://www.cloudflare.com/cdn-cgi/trace";
-  // Upload: POST to httpbin (CORS usually OK). If blocked, upload will show "N/A".
-  const UL_URLS = [
-    "https://httpbin.org/post",
-    "https://postman-echo.com/post"
-  ];
-
-  // How much data to try per test
-  const DL_BYTES = 2_500_000;  // ~2.5MB
-  const UL_BYTES = 1_000_000;  // ~1MB
-
-  // State for chart
-  const history = []; // {t, dl, ul}
-  const MAX_POINTS = 60;
-  let timer = null;
-  let aborter = null;
-
-  const fmt = (n) => (Number.isFinite(n) ? n.toFixed(1) : "—");
-  const nowTime = () => new Date().toLocaleTimeString();
-
-  function setStatus(s) { statusEl.textContent = s; }
-  function setLast() { lastEl.textContent = nowTime(); }
-
-  function barWidth(mbps) {
-    const max = Math.max(1, Number(maxMbpsInp.value || 100));
-    const pct = Math.max(0, Math.min(100, (mbps / max) * 100));
-    return pct.toFixed(1) + "%";
-  }
-
-  // ==== Core measurements ====
-  async function measurePing(signal) {
-    // Do a few quick pings and compute avg + jitter
-    const samples = [];
-    for (let i = 0; i < 4; i++) {
-      const t0 = performance.now();
-      try {
-        // no-cors: response body not readable, but request still happens
-        await fetch(PING_URL + "?_t=" + Date.now() + "_" + i, { mode: "no-cors", cache: "no-store", signal });
-        const dt = performance.now() - t0;
-        samples.push(dt);
-      } catch (e) {
-        // If aborted or network error
-        if (signal?.aborted) throw e;
-        // Push a large value to reflect failure
-        samples.push(NaN);
-      }
-      await new Promise(r => setTimeout(r, 120));
-    }
-    const clean = samples.filter(Number.isFinite);
-    if (!clean.length) return { ping: NaN, jitter: NaN };
-
-    const avg = clean.reduce((a,b)=>a+b,0) / clean.length;
-    const variance = clean.reduce((a,b)=>a + Math.pow(b-avg,2),0) / clean.length;
-    const jitter = Math.sqrt(variance);
-    return { ping: avg, jitter };
-  }
-
-  async function tryFetchBytes(url, bytesHint, signal) {
-    // We don't always know exact bytes served; if the endpoint provides exact bytes (cloudflare __down) we use that.
-    const t0 = performance.now();
-    const res = await fetch(url + (url.includes("?") ? "&" : "?") + "_t=" + Date.now(), {
-      cache: "no-store",
-      signal
-    });
-    const buf = await res.arrayBuffer();
-    const t1 = performance.now();
-    const bytes = buf.byteLength || bytesHint;
-    const seconds = Math.max(0.001, (t1 - t0) / 1000);
-    const mbps = (bytes * 8) / seconds / 1_000_000;
-    return mbps;
-  }
-
-  async function measureDownload(signal) {
-    for (const base of DL_URLS) {
-      try {
-        // If using Cloudflare bytes endpoint, bytes are fixed by query param.
-        const url = base.includes("__down") ? base : base;
-        const mbps = await tryFetchBytes(url, DL_BYTES, signal);
-        return mbps;
-      } catch (e) {
-        if (signal?.aborted) throw e;
-        // try next
-      }
-    }
-    return NaN;
-  }
-
-  async function measureUpload(signal) {
-    // Create random payload
-    const payload = new Uint8Array(UL_BYTES);
-    crypto.getRandomValues(payload);
-
-    for (const url of UL_URLS) {
-      const t0 = performance.now();
-      try {
-        const res = await fetch(url, {
-          method: "POST",
-          body: payload,
-          cache: "no-store",
-          signal
-        });
-        // Even if response body unreadable, status should be there when CORS allows.
-        // We'll try to read a little to ensure request completes.
-        await res.text().catch(()=>{});
-        const t1 = performance.now();
-        const seconds = Math.max(0.001, (t1 - t0) / 1000);
-        const mbps = (UL_BYTES * 8) / seconds / 1_000_000;
-        return mbps;
-      } catch (e) {
-        if (signal?.aborted) throw e;
-      }
-    }
-    return NaN; // upload may be blocked by CORS
-  }
-
-  // ==== Chart ====
-  function drawChart() {
-    // High-DPI crispness
-    const dpr = window.devicePixelRatio || 1;
-    const cssW = canvas.clientWidth, cssH = canvas.clientHeight;
-    canvas.width = Math.round(cssW * dpr);
-    canvas.height = Math.round(cssH * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-    const w = cssW, h = cssH;
-    ctx.clearRect(0, 0, w, h);
-
-    // Grid
-    ctx.globalAlpha = 0.35;
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 4; i++) {
-      const y = (h * i) / 5;
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-
-    // Determine Y scale
-    const max = Math.max(10,
-      ...history.map(p => Math.max(p.dl || 0, p.ul || 0)).filter(Number.isFinite),
-      Number(maxMbpsInp.value || 200)
-    );
-
-    function plotLine(key) {
-      const pts = history.map((p, idx) => {
-        const x = (idx / Math.max(1, history.length - 1)) * (w - 20) + 10;
-        const v = Number.isFinite(p[key]) ? p[key] : 0;
-        const y = h - 10 - (v / max) * (h - 20);
-        return {x, y};
-      });
-
-      ctx.beginPath();
-      pts.forEach((pt, i) => i ? ctx.lineTo(pt.x, pt.y) : ctx.moveTo(pt.x, pt.y));
-      ctx.stroke();
-    }
-
-    // Download line
-    ctx.strokeStyle = "#42e3ff";
-    ctx.lineWidth = 2;
-    plotLine("dl");
-
-    // Upload line
-    ctx.strokeStyle = "#2b63ff";
-    ctx.lineWidth = 2;
-    plotLine("ul");
-
-    // Legend
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.font = "12px system-ui, sans-serif";
-    ctx.fillText("DL", 12, 18);
-    ctx.fillStyle = "#42e3ff";
-    ctx.fillRect(34, 10, 18, 6);
-    ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fillText("UL", 62, 18);
-    ctx.fillStyle = "#2b63ff";
-    ctx.fillRect(84, 10, 18, 6);
-
-    // Axis label
-    ctx.fillStyle = "rgba(255,255,255,0.75)";
-    ctx.fillText("0–" + Math.round(max) + " Mbps", w - 110, 18);
-  }
-
-  function pushHistory(dl, ul) {
-    history.push({ t: Date.now(), dl, ul });
-    while (history.length > MAX_POINTS) history.shift();
-    drawChart();
-  }
-
-  // ==== Loop ====
-  async function tick() {
-    aborter = new AbortController();
-    const signal = aborter.signal;
-
-    setStatus("Measuring…");
-    try {
-      const [{ping, jitter}, dl, ul] = await Promise.all([
-        measurePing(signal),
-        measureDownload(signal),
-        measureUpload(signal)
-      ]);
-
-      pingEl.textContent = Number.isFinite(ping) ? ping.toFixed(0) : "—";
-      jitterEl.textContent = Number.isFinite(jitter) ? jitter.toFixed(0) : "—";
-
-      dlEl.textContent = fmt(dl);
-      ulEl.textContent = Number.isFinite(ul) ? fmt(ul) : "N/A";
-
-      dlBar.style.width = Number.isFinite(dl) ? barWidth(dl) : "0%";
-      ulBar.style.width = Number.isFinite(ul) ? barWidth(ul) : "0%";
-
-      pushHistory(Number.isFinite(dl) ? dl : 0, Number.isFinite(ul) ? ul : 0);
-
-      setLast();
-      setStatus("OK");
-    } catch (e) {
-      if (aborter?.signal?.aborted) {
-        setStatus("Stopped");
-        return;
-      }
-      setStatus("Error / blocked (CORS?)");
-    }
-  }
-
-  function start() {
-    if (timer) return;
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-
-    const interval = Number(intervalSel.value || 5000);
-    tick(); // immediate
-    timer = setInterval(tick, interval);
-  }
-
-  function stop() {
-    if (!timer) return;
-    clearInterval(timer);
-    timer = null;
-    aborter?.abort();
-
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
-    setStatus("Stopped");
-  }
-
-  // Resize chart on window resize
-  window.addEventListener("resize", drawChart);
-
-  startBtn.addEventListener("click", start);
-  stopBtn.addEventListener("click", stop);
-
-  // Initial draw
-  drawChart();
-})();
-</script>
 </body>
 </html>
