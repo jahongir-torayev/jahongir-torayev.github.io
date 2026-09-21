@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bosh sahifa — PDP LMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
+      rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js" defer></script>
+<style>
+    :root {
+        --bg: #F5F5F9;
+        --surface: #FFFFFF;
+        --ink: #101018;
+        --ink-soft: #63636F;
+        --muted: #9797A3;
+        --line: #EAEAF1;
+        --accent: #45b36b;
+        --accent-soft: #E3F5EA;
+        --success: #0F8A5F;
+        --success-soft: #E1F5EB;
+        --danger: #D1382C;
+        --danger-soft: #FCEAE8;
+        --warn: #B4740A;
+        --warn-soft: #FBF0DA;
+        --info: #3452C6;
+        --info-soft: #EAEEFC;
+        --neutral: #5B5F6E;
+        --neutral-soft: #EDEEF2;
+        --shadow: 0 1px 2px rgba(16, 16, 24, .04), 0 10px 30px -12px rgba(16, 16, 24, .10);
+        --shadow-hover: 0 1px 2px rgba(16, 16, 24, .05), 0 18px 40px -14px rgba(16, 16, 24, .16);
+        --r-lg: 20px;
+        --r-md: 12px;
+        --r-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Inter', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 44px 32px 90px;
+    }
+
+    .dash-grid {
+        display: grid;
+        grid-template-columns: 1.65fr 1fr;
+        gap: 16px;
+        align-items: start;
+    }
+
+    @media (max-width: 860px) {
+        .dash-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        padding: 22px;
+        box-shadow: var(--shadow);
+    }
+
+    .card + .card { margin-top: 16px; }
+
+    .card-title {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        margin: 0 0 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .card-title .hint {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* ---------- Profile ---------- */
+    /* Profile cardi JS orqali kalendar cardi (Bu hafta) balandligiga tenglashtiriladi —
+       shu sabab profile-row ichki kontent bo'sh joy paydo bo'lmasligi uchun vertikal
+       markazga joylashtiriladi */
+    #profile-card {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-row {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        width: 100%;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 28px;
+        background: var(--accent-soft);
+        flex: none;
+        overflow: hidden;
+    }
+
+    .profile-greeting {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin: 0 0 8px;
+    }
+
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .profile-name {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 32px;
+        margin: 0 0 18px;
+        line-height: 1.15;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .info-divider {
+        width: 1px;
+        height: 16px;
+        background: var(--line);
+        flex: none;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14.5px;
+        font-weight: 500;
+        color: var(--ink-soft);
+    }
+
+    .info-item svg { color: var(--muted); flex: none; }
+
+    .info-item.mono {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 500;
+        font-size: 13.5px;
+    }
+
+    .group-pill {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14.5px;
+        font-weight: 500;
+        color: var(--ink-soft);
+        position: relative;
+    }
+
+    .group-pill svg { color: var(--muted); flex: none; }
+
+    .group-more {
+        font-size: 10px;
+        background: var(--bg);
+        color: var(--ink-soft);
+        border-radius: var(--r-pill);
+        padding: 1px 7px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .15s ease;
+    }
+
+    /* "+N" tugmasi faqat pill ustiga hover qilinganda ko'rinadi */
+    .group-pill:hover .group-more {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .group-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        margin-top: 8px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-md);
+        padding: 10px 12px;
+        min-width: 190px;
+        box-shadow: var(--shadow-hover);
+        z-index: 10;
+    }
+
+    /* ro'yxat hoverda emas, faqat "+N" tugmasi bosilganda (group-dropdown.open) ochiladi */
+    .group-dropdown.open { display: block; }
+
+    .group-dropdown-title {
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .group-dropdown-item {
+        font-size: 13px;
+        padding: 4px 0;
+        color: var(--ink-soft);
+        font-weight: 500;
+    }
+
+    .group-dropdown-item.active { color: var(--accent); font-weight: 700; }
+
+    /* ---------- Lessons ---------- */
+    /* Bugungi darslar cardi JS orqali o'ng ustun (right-col) balandligiga tenglashtiriladi,
+       shu tufayli card doim "Tezkor havolalar" pastki chetiga tekis tugaydi va undan
+       hech qachon pastga o'tib ketmaydi — darslar soni ko'p bo'lsa ro'yxat scroll bo'ladi,
+       kam bo'lsa ham cardning umumiy balandligi o'zgarmay qoladi. */
+    #bugungi-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #lesson-list {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--muted) transparent;
+    }
+    #lesson-list::-webkit-scrollbar { width: 6px; }
+    #lesson-list::-webkit-scrollbar-track { background: transparent; }
+    #lesson-list::-webkit-scrollbar-thumb { background: var(--line); border-radius: var(--r-pill); }
+    #lesson-list::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+    .lesson-item {
+        background: var(--bg);
+        border-radius: var(--r-lg);
+        padding: 18px;
+        transition: opacity .25s;
+    }
+
+    .lesson-item + .lesson-item { margin-top: 12px; }
+
+    .lesson-item.finished { opacity: .6; }
+
+    /* ro'yxatdagi birinchi hali tugamagan dars (ongoing yoki upcoming) ro'yxat boshida "yopishib" turadi —
+       pastdagilarni scroll qilsa ham joyidan qimirlamaydi; tanaffus vaqtida ham shu holat saqlanadi */
+    .lesson-item.pinned {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        box-shadow: 0 10px 16px -12px rgba(16, 16, 24, .22);
+    }
+
+    .l-head {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 14px;
+    }
+
+    .subj-ic {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+
+    .lesson-item.finished .subj-ic { background: var(--neutral-soft); color: var(--neutral); }
+    .lesson-item.ongoing .subj-ic { background: var(--info-soft); color: var(--info); }
+
+    .l-title-wrap { min-width: 0; flex: 1; }
+
+    .l-kind {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin: 0 0 3px;
+    }
+
+    .l-title {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 15.5px;
+        margin: 0;
+        color: var(--ink);
+    }
+
+    .badge-col {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        flex: none;
+    }
+
+    .type-badge, .status-badge {
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .02em;
+        padding: 3px 9px;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+
+    .type-badge.online { background: var(--info-soft); color: var(--info); }
+    .type-badge.offline { background: var(--surface); color: var(--ink-soft); border: 1px solid var(--line); }
+
+    .status-badge.upcoming { background: var(--neutral-soft); color: var(--neutral); }
+    .status-badge.ongoing { background: var(--accent-soft); color: var(--accent); }
+    .status-badge.finished { background: var(--success-soft); color: var(--success); }
+
+    .dates-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .date-col {
+        background: var(--surface);
+        border-radius: var(--r-md);
+        padding: 8px 10px;
+    }
+
+    .date-col .l {
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .03em;
+        margin-bottom: 2px;
+    }
+
+    .date-col .v {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--ink);
+    }
+
+    .progress-block { display: flex; flex-direction: column; gap: 6px; }
+
+    .progress-label-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .progress-label-row .l { color: var(--muted); text-transform: uppercase; letter-spacing: .03em; font-size: 10.5px; }
+    .progress-label-row .state { color: var(--ink-soft); }
+    .lesson-item.ongoing .progress-label-row .state { color: var(--accent); }
+    .lesson-item.finished .progress-label-row .state { color: var(--success); }
+
+    .progress-track {
+        height: 7px;
+        border-radius: var(--r-pill);
+        background: var(--surface);
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        border-radius: var(--r-pill);
+        background: var(--accent);
+    }
+
+    .lesson-item.finished .progress-fill { background: var(--success); }
+    .lesson-item.upcoming .progress-fill { background: var(--line); }
+
+    /* ---------- Mini calendar ---------- */
+    .cal-head-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 4px;
+    }
+
+    .cal-head-row .month { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+    .cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-top: 1px solid var(--line);
+        margin-top: 10px;
+    }
+
+    .cal-day {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 2px 10px;
+        border-right: 1px solid var(--line);
+    }
+
+    .cal-day:last-child { border-right: none; }
+    .cal-day.has-lessons { cursor: pointer; }
+
+    .cal-day-name {
+        font-size: 9.5px;
+        color: var(--muted);
+        text-transform: lowercase;
+        margin-bottom: 8px;
+    }
+
+    .cal-date-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        color: var(--ink);
+        margin-bottom: 3px;
+    }
+
+    .cal-day.today .cal-date-circle {
+        border: 1.5px solid var(--accent);
+        color: var(--accent);
+    }
+
+    .cal-load-wrap {
+        position: relative;
+        width: 100%;
+        height: 8px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+
+    .cal-load-bar {
+        width: 16px;
+        height: 3px;
+        border-radius: var(--r-pill);
+        background: var(--line);
+        transition: height .2s ease, background .2s ease;
+    }
+
+    .cal-day.has-lessons .cal-load-bar { background: var(--accent); }
+    .cal-day.today .cal-load-bar { background: var(--accent-soft); }
+    .cal-day.today.has-lessons .cal-load-bar { background: var(--accent); }
+    .cal-day.has-lessons:hover .cal-load-bar { height: var(--bar-h, 3px); }
+
+    .cal-load-count {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        margin-bottom: 5px;
+        transform: translate(-50%, 3px);
+        background: var(--ink);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 4px 8px;
+        border-radius: var(--r-pill);
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .15s ease, transform .15s ease;
+    }
+
+    .cal-day:hover .cal-load-count {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    /* ---------- Stats ---------- */
+    .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+    }
+
+    .stat-box {
+        background: var(--bg);
+        border-radius: var(--r-md);
+        padding: 10px 10px 8px;
+        height: 96px; /* fixed on purpose: must fit header row + number + dots row without clipping/overlap */
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .stat-box .l {
+        font-size: 10px;
+        color: var(--ink-soft);
+        font-weight: 600;
+        line-height: 1.3;
+        padding-top: 2px;
+        max-width: 84px;
+    }
+
+    .stat-box .ic {
+        width: 22px;
+        height: 22px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+
+    .stat-box .ic svg { width: 13px; height: 13px; }
+
+    .stat-box .n {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 19px;
+        line-height: 1;
+        margin-top: auto; /* keeps the header flush at the top and the number flush at the bottom in every card, regardless of label length */
+    }
+
+    .slide-box {
+        padding: 0;
+        overflow: hidden;
+        /* height inherited from .stat-box (148px) — same box for all 3 cards */
+    }
+    .slide-box .slide-viewport {
+        overflow: hidden;
+        flex: 1;
+        min-height: 0; /* lets a flex child actually clip instead of growing to content */
+    }
+    .slide-box .slide-track {
+        display: flex;
+        flex-direction: column;
+        height: 100%; /* gives each pane a real 100% reference instead of the old N×100% bug */
+        transition: transform .4s ease;
+    }
+    .slide-box .slide-pane {
+        flex: 0 0 100%; /* each pane = exactly one viewport height, so translateY(-100%) moves by 1 pane, not N panes */
+        width: 100%;
+        padding: 10px 10px 2px; /* same top/side padding as the static stat-box, so the header lands at the identical offset */
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
+    .slide-box .dots {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+        padding: 6px 0 9px;
+        flex: none; /* reserved space at the bottom of the box, doesn't push the header/number above it around */
+    }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--line); cursor: pointer; flex: none; transition: background .2s ease, transform .2s ease; }
+    .dot.active { background: var(--accent); transform: scale(1.3); }
+
+    /* ---------- Empty state (card 3) ---------- */
+    .stat-box.empty-box .ic {
+        background: var(--neutral-soft);
+        color: var(--muted);
+    }
+    .stat-box.empty-box .n {
+        color: var(--ink-soft);
+    }
+
+    /* ---------- Notifications ---------- */
+    .notif-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        border-radius: var(--r-md);
+        padding: 11px 12px;
+        margin-bottom: 8px;
+    }
+
+    .notif-item:last-child { margin-bottom: 0; }
+    .notif-item.n-danger { background: var(--danger-soft); }
+    .notif-item.n-info { background: var(--info-soft); }
+    .notif-item.n-muted { background: var(--bg); }
+
+    .notif-ic {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+
+    .notif-item.n-danger .notif-ic { color: var(--danger); }
+    .notif-item.n-info .notif-ic { color: var(--info); }
+    .notif-item.n-muted .notif-ic { color: var(--neutral); }
+
+    .notif-body { min-width: 0; flex: 1; }
+
+    .notif-top {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .notif-from {
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .notif-item.n-danger .notif-from { color: var(--danger); }
+    .notif-item.n-info .notif-from { color: var(--info); }
+    .notif-item.n-muted .notif-from { color: var(--ink-soft); }
+
+    .notif-time {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        white-space: nowrap;
+        flex: none;
+    }
+
+    .notif-msg {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--ink-soft);
+        line-height: 1.4;
+        margin-top: 3px;
+    }
+
+    .see-all {
+        display: block;
+        text-align: center;
+        margin-top: 12px;
+        font-size: 12.5px;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    /* ---------- Tezkor havolalar ---------- */
+    .ql-box {
+        overflow: hidden;
+    }
+
+    .ql-box .ql-viewport {
+        overflow: hidden;
+        height: 64px;
+    }
+
+    .ql-box .ql-track {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        transition: transform .4s ease;
+    }
+
+    .ql-box .ql-pane {
+        flex: 0 0 100%;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+    }
+
+    .ql-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        background: var(--bg);
+        border-radius: var(--r-md);
+        padding: 12px 14px;
+        text-decoration: none;
+        color: inherit;
+        box-sizing: border-box;
+        transition: background .15s ease;
+    }
+
+    .ql-link:hover { background: var(--accent-soft); }
+
+    .ql-ic {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #E7F5FC;
+        color: #229ED9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+
+    .ql-body { min-width: 0; flex: 1; }
+
+    .ql-title {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 13.5px;
+        color: var(--ink);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .ql-sub {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 2px;
+    }
+
+    .ql-arrow {
+        color: var(--muted);
+        flex: none;
+        display: flex;
+    }
+
+    /* ================= Davomat ro'yxati ================= */
+    .att-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 4px;
+        border-bottom: 1px solid var(--line);
+    }
+    .att-item:last-child { border-bottom: none; }
+
+    .att-date {
+        width: 46px;
+        flex: none;
+        text-align: center;
+    }
+    .att-date .d { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 17px; line-height: 1; }
+    .att-date .m { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 3px; }
+
+    .att-body { min-width: 0; flex: 1; }
+    .att-title { font-weight: 700; font-size: 13.5px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .att-time { font-size: 11.5px; color: var(--muted); margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+    .att-badge {
+        flex: none;
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: var(--r-pill);
+    }
+    .att-badge.present { background: var(--success-soft); color: var(--success); }
+    .att-badge.late { background: var(--warn-soft); color: var(--warn); }
+    .att-badge.absent { background: var(--danger-soft); color: var(--danger); }
+
+    /* ================= Oylik kalendar ================= */
+    .month-grid-names {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        margin-bottom: 6px;
+    }
+    .month-grid-names span {
+        text-align: center;
+        font-size: 10px;
+        color: var(--muted);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .month-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+    }
+
+    .month-cell {
+        aspect-ratio: 1 / 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 12.5px;
+        color: var(--ink);
+        position: relative;
+        cursor: pointer;
+        background: var(--bg);
+    }
+    .month-cell.empty { background: none; cursor: default; }
+    .month-cell.today { background: var(--accent); color: #fff; }
+    .month-cell.selected:not(.today) { background: var(--accent-soft); color: var(--accent); }
+    .month-cell .dot {
+        width: 4px; height: 4px; border-radius: 50%;
+        background: var(--accent); margin-top: 3px;
+    }
+    .month-cell.today .dot { background: #fff; }
+
+    /* ================= Baholar ro'yxati ================= */
+    .grade-item {
+        padding: 13px 4px;
+        border-bottom: 1px solid var(--line);
+    }
+    .grade-item:last-child { border-bottom: none; }
+    .grade-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+    .grade-name { font-weight: 700; font-size: 13.5px; color: var(--ink); }
+    .grade-score { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 13px; color: var(--ink-soft); flex: none; }
+    .grade-score b { color: var(--ink); font-size: 14.5px; }
+
+    /* ================= MULTI-PAGE (mobil) ================= */
+    .app-page { display: none; }
+    .app-page.active { display: block; }
+
+    .mobile-page-head {
+        display: none;
+    }
+
+    /* ================= BOTTOM NAV (faqat mobil) ================= */
+    .bottom-nav {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+        .page {
+            padding: 18px 14px calc(96px + env(safe-area-inset-bottom, 0px));
+        }
+
+        .dash-grid { gap: 14px; }
+
+        .profile-row { gap: 16px; }
+        .avatar { width: 76px; height: 76px; border-radius: 20px; }
+        .profile-name { font-size: 22px; margin-bottom: 10px; }
+        .info-row { gap: 10px; row-gap: 8px; }
+        .info-item, .group-pill { font-size: 13px; }
+
+        #profile-card { height: auto !important; }
+        #bugungi-card { height: auto !important; }
+        #lesson-list { max-height: 420px; }
+
+        .mobile-page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .mobile-page-head h1 {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 800;
+            font-size: 21px;
+            margin: 0;
+        }
+
+        .mobile-page-head .sub {
+            font-size: 12.5px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .bottom-nav {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 60;
+            background: var(--surface);
+            border-top: 1px solid var(--line);
+            padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
+            box-shadow: 0 -8px 24px -16px rgba(16, 16, 24, .25);
+        }
+
+        .bn-item {
+            appearance: none;
+            border: none;
+            background: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3px;
+            flex: 1 1 0;
+            min-width: 0;
+            padding: 6px 2px 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bn-item svg { width: 22px; height: 22px; transition: transform .15s ease; }
+        .bn-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62px; }
+        .bn-item.active { color: var(--accent); }
+        .bn-item.active svg { transform: translateY(-1px); }
+        .bn-item:active svg { transform: scale(.9); }
+
+        .bn-scan {
+            flex: 0 0 auto;
+            position: relative;
+            width: 58px;
+        }
+
+        .bn-scan-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #56c67e, var(--accent));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 22px -8px rgba(69, 179, 107, .6);
+            margin-top: -26px;
+            border: 4px solid var(--surface);
+            transition: transform .15s ease;
+        }
+
+        .bn-scan-circle svg { width: 24px; height: 24px; }
+        .bn-scan:active .bn-scan-circle { transform: scale(.92); }
+        .bn-scan span { color: var(--ink-soft); margin-top: 2px; }
+    }
+
+    /* ================= QR SCANNER ================= */
+    .qr-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        background: #05070a;
+        display: none;
+        flex-direction: column;
+        touch-action: none;
+    }
+
+    .qr-overlay.open { display: flex; }
+
+    .qr-topbar {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: calc(16px + env(safe-area-inset-top, 0px)) 16px 14px;
+        color: #fff;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        background: linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,0));
+    }
+
+    .qr-close-btn {
+        appearance: none;
+        border: none;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.14);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex: none;
+    }
+
+    .qr-close-btn svg { width: 18px; height: 18px; }
+
+    .qr-video-wrap {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #000;
+    }
+
+    #qr-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .qr-dim {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background:
+            radial-gradient(circle at 50% 42%, transparent 0, transparent 118px, rgba(0,0,0,.5) 119px);
+    }
+
+    .qr-frame {
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        left: 50%;
+        width: 236px;
+        height: 236px;
+        transform: translate(-50%, calc(-50% - 34px));
+    }
+
+    .qr-corner {
+        position: absolute;
+        width: 34px;
+        height: 34px;
+        border: 3.5px solid var(--accent);
+        opacity: .95;
+        transition: border-color .2s ease;
+    }
+
+    .qr-frame.found .qr-corner { border-color: #5EE38B; }
+
+    .qr-corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 10px 0 0 0; }
+    .qr-corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-radius: 0 10px 0 0; }
+    .qr-corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-radius: 0 0 0 10px; }
+    .qr-corner.br { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 10px 0; }
+
+    .qr-scanline {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        height: 2px;
+        border-radius: 2px;
+        top: 6px;
+        background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+        box-shadow: 0 0 8px 1px rgba(69, 179, 107, .8);
+        animation: qrScan 2.1s ease-in-out infinite;
+    }
+
+    @keyframes qrScan {
+        0%   { top: 6px; opacity: 0; }
+        8%   { opacity: 1; }
+        50%  { top: calc(100% - 8px); opacity: 1; }
+        92%  { opacity: 1; }
+        100% { top: 6px; opacity: 0; }
+    }
+
+    #qr-mark-canvas {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .qr-hint {
+        position: absolute;
+        z-index: 3;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 92px);
+        color: rgba(255,255,255,.85);
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        width: 260px;
+    }
+
+    .qr-status {
+        position: absolute;
+        z-index: 3;
+        left: 0;
+        right: 0;
+        bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+        display: flex;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .qr-status-pill {
+        background: rgba(255,255,255,.95);
+        color: var(--ink);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12.5px;
+        font-weight: 600;
+        padding: 10px 18px;
+        border-radius: var(--r-pill);
+        max-width: 84%;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity .2s ease, transform .2s ease;
+        box-shadow: var(--shadow-hover);
+    }
+
+    .qr-status-pill.show { opacity: 1; transform: translateY(0); }
+    .qr-status-pill.ok { background: var(--accent); color: #fff; }
+
+    .qr-error {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 40px;
+        text-align: center;
+        color: #fff;
+        background: #0b0e13;
+    }
+
+    .qr-error.show { display: flex; }
+    .qr-error svg { width: 40px; height: 40px; color: var(--danger); }
+    .qr-error p { margin: 0; font-size: 13.5px; color: rgba(255,255,255,.75); max-width: 280px; }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+    <div class="app-page active" id="page-dashboard">
+    <div class="dash-grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="left-col">
+
+            <div class="card" id="profile-card">
+                <div class="profile-row">
+                    <div class="avatar"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Nodira Ahmedova"></div>
+                    <div>
+                        <div class="profile-greeting" id="profile-greeting">Xayrli kun, davom etaylik! 👋</div>
+                        <div class="profile-name">Nodira Ahmedova</div>
+                        <div class="info-row">
+                            <div class="group-pill">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 10a4 4 0 100-8 4 4 0 000 8zM23 20v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                BE-24-3
+                                <span class="group-more" id="group-more">+2</span>
+                                <div class="group-dropdown">
+                                    <div class="group-dropdown-title">Barcha guruhlar</div>
+                                    <div id="group-dropdown-list"></div>
+                                </div>
+                            </div>
+                            <span class="info-divider"></span>
+                            <div class="info-item mono">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 9h6M7 13h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="16.5" cy="14.5" r="1.4" stroke="currentColor" stroke-width="1.4"/></svg>
+                                ST-10482
+                            </div>
+                            <span class="info-divider"></span>
+                            <div class="info-item mono">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4.5 4h3.2l1.3 4.5-2 1.5a11 11 0 005 5l1.5-2 4.5 1.3v3.2c0 1-.8 1.8-1.8 1.7A16 16 0 013 5.8C2.9 4.8 3.6 4 4.5 4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                                +998 90 123 45 67
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" id="bugungi-card">
+                <div class="card-title">Bugungi darslar</div>
+                <div id="lesson-list"></div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="right-col">
+
+            <div class="card" id="calendar-card">
+                <div class="cal-head-row">
+                    <div class="card-title" style="margin:0;">Bu hafta</div>
+                    <span class="month" id="cal-month-label"></span>
+                </div>
+                <div class="cal-grid" id="cal-row"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Statistika</div>
+                <div class="stats-row">
+
+                    <div class="stat-box">
+                        <div class="stat-head">
+                            <span class="l">O'rtacha davomat</span>
+                            <div class="ic" style="background:var(--success-soft);color:var(--success)">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M7 15l3-4 3 2 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </div>
+                        </div>
+                        <div class="n">92%</div>
+                    </div>
+
+                    <div class="stat-box slide-box" id="stat-box-2"></div>
+
+                    <div class="stat-box empty-box" id="stat-box-3"></div>
+
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Bildirishnomalar</div>
+                <div class="notif-item n-danger">
+                    <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L1.9 18a2 2 0 001.7 3h16.8a2 2 0 001.7-3L14.1 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+                    <div class="notif-body">
+                        <div class="notif-top">
+                            <span class="notif-from">Deadline</span>
+                            <span class="notif-time">1 soat oldin</span>
+                        </div>
+                        <div class="notif-msg">Assignment topshirish — 2 kun qoldi</div>
+                    </div>
+                </div>
+                <div class="notif-item n-info">
+                    <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 16V4M7 9l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+                    <div class="notif-body">
+                        <div class="notif-top">
+                            <span class="notif-from">Aziz aka</span>
+                            <span class="notif-time">3 soat oldin</span>
+                        </div>
+                        <div class="notif-msg">Ertangi darsga materiallar yuklandi</div>
+                    </div>
+                </div>
+                <div class="notif-item n-muted">
+                    <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4v6h6M20 20v-6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 10a8 8 0 00-14.6-4.6M4 14a8 8 0 0014.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div class="notif-body">
+                        <div class="notif-top">
+                            <span class="notif-from">Tizim</span>
+                            <span class="notif-time">Kecha</span>
+                        </div>
+                        <div class="notif-msg">Jadvalingiz yangilandi</div>
+                    </div>
+                </div>
+                <a class="see-all" href="#">Hammasini ko'rish →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Tezkor havolalar</div>
+                <div class="ql-box" id="quick-links-slider"></div>
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+    <!-- /page-dashboard -->
+
+    <!-- ================= DAVOMAT (mobil sahifa) ================= -->
+    <div class="app-page" id="page-attendance">
+        <div class="mobile-page-head">
+            <div>
+                <h1>Davomat</h1>
+                <div class="sub">Sentabr 2026</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Umumiy ko'rsatkich</div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-head">
+                        <span class="l">O'rtacha davomat</span>
+                        <div class="ic" style="background:var(--success-soft);color:var(--success)">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M7 15l3-4 3 2 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </div>
+                    <div class="n">78%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-head">
+                        <span class="l">Bu oy kechikish</span>
+                        <div class="ic" style="background:var(--warn-soft);color:var(--warn)">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>
+                        </div>
+                    </div>
+                    <div class="n">3</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-head">
+                        <span class="l">Bu oy kelmagan</span>
+                        <div class="ic" style="background:var(--danger-soft);color:var(--danger)">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </div>
+                    </div>
+                    <div class="n">2</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">So'nggi belgilar</div>
+            <div id="attendance-list"></div>
+        </div>
+    </div>
+
+    <!-- ================= KALENDAR (mobil sahifa) ================= -->
+    <div class="app-page" id="page-calendar">
+        <div class="mobile-page-head">
+            <div>
+                <h1>Kalendar</h1>
+                <div class="sub" id="cal-full-month-label">Sentabr 2026</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="cal-head-row">
+                <div class="card-title" style="margin:0;">Hafta</div>
+                <span class="month" id="cal-month-label-2"></span>
+            </div>
+            <div class="cal-grid" id="cal-row-2"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Oy ko'rinishi</div>
+            <div class="month-grid" id="month-grid"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title" id="day-detail-title">Bugungi darslar</div>
+            <div id="day-detail-list"></div>
+        </div>
+    </div>
+
+    <!-- ================= BAHOLAR (mobil sahifa) ================= -->
+    <div class="app-page" id="page-grades">
+        <div class="mobile-page-head">
+            <div>
+                <h1>Baholar</h1>
+                <div class="sub">Joriy semestr</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">O'rtacha ball<span class="hint">GPA</span></div>
+            <div class="stats-row" style="grid-template-columns:1fr;">
+                <div class="stat-box" style="height:auto;padding:14px 16px;">
+                    <div class="stat-head">
+                        <span class="l" style="max-width:none;">Barcha fanlar bo'yicha o'rtacha</span>
+                        <div class="ic" style="background:var(--accent-soft);color:var(--accent)">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M12 4L2 9l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 11.5V17c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                        </div>
+                    </div>
+                    <div class="n">87 / 100</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Fanlar bo'yicha</div>
+            <div id="grades-list"></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= BOTTOM NAV (mobil) ================= -->
+<nav class="bottom-nav" id="bottom-nav">
+    <button class="bn-item active" data-page="page-dashboard">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5L12 4l8 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9a1 1 0 001 1h3v-6h4v6h3a1 1 0 001-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Talaba paneli</span>
+    </button>
+    <button class="bn-item" data-page="page-attendance">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3.5" width="18" height="17" rx="3" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Davomat</span>
+    </button>
+    <button class="bn-item bn-scan" id="qr-scan-btn" type="button" aria-label="QR skanerlash">
+        <span class="bn-scan-circle">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.9"/><rect x="14" y="3" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.9"/><rect x="3" y="14" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.9"/><path d="M14 14h3v3M20 14v3.5M14 20h3.5M20 20v.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span>Skanerlash</span>
+    </button>
+    <button class="bn-item" data-page="page-calendar">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M3 9.5h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span>Kalendar</span>
+    </button>
+    <button class="bn-item" data-page="page-grades">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h9l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 12l2 2 4-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Baholar</span>
+    </button>
+</nav>
+
+<!-- ================= QR SCANNER OVERLAY ================= -->
+<div class="qr-overlay" id="qr-overlay">
+    <div class="qr-topbar">
+        <button class="qr-close-btn" id="qr-close-btn" type="button" aria-label="Yopish">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <span>QR skanerlash</span>
+    </div>
+
+    <div class="qr-video-wrap">
+        <video id="qr-video" autoplay playsinline muted></video>
+        <div class="qr-dim"></div>
+        <canvas id="qr-mark-canvas"></canvas>
+    </div>
+
+    <div class="qr-frame" id="qr-frame">
+        <div class="qr-corner tl"></div>
+        <div class="qr-corner tr"></div>
+        <div class="qr-corner bl"></div>
+        <div class="qr-corner br"></div>
+        <div class="qr-scanline" id="qr-scanline"></div>
+    </div>
+
+    <div class="qr-hint">QR kodni ramka ichiga joylashtiring — avtomatik aniqlanadi</div>
+
+    <div class="qr-status">
+        <div class="qr-status-pill" id="qr-status-pill"></div>
+    </div>
+
+    <div class="qr-error" id="qr-error">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5M12 16.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>
+        <div style="font-weight:700;">Kameraga ruxsat berilmadi</div>
+        <p id="qr-error-msg">QR skanerdan foydalanish uchun brauzer sozlamalaridan kameraga ruxsat bering.</p>
+    </div>
+
+    <canvas id="qr-decode-canvas" style="display:none;"></canvas>
+</div>
+
+<script>
+    // ============ ICONS (subject) ============
+    const ICONS = {
+        code: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M8 8l-5 4 5 4M16 8l5 4-5 4M13 5l-2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        brain: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 3a3 3 0 00-3 3v.2A3 3 0 004 9v1a3 3 0 00-1 5.6V17a3 3 0 003 3h1a3 3 0 003-3V6a3 3 0 00-1-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15 3a3 3 0 013 3v.2A3 3 0 0120 9v1a3 3 0 011 5.6V17a3 3 0 01-3 3h-1a3 3 0 01-3-3V6a3 3 0 011-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
+        cap: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 4L2 9l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 11.5V17c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+        layout: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M3 9.5h18M9 9.5V20" stroke="currentColor" stroke-width="1.6"/></svg>`,
+        db: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6" rx="8" ry="3" stroke="currentColor" stroke-width="1.6"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6" stroke="currentColor" stroke-width="1.6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6" stroke="currentColor" stroke-width="1.6"/></svg>`,
+        server: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="13" width="18" height="7" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 7.5h.01M6.5 16.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`
+    };
+    const checkIcon = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    // ============ DEMO LESSON DATA (virtual clock, minutes from 09:00) ============
+    const lessons = [
+        { name: "Java Backend Development", mentor: "Aziz Rahimov", room: "204-xona", type: "offline", icon: "code", startMin: 0,   endMin: 40  },
+        { name: "Algoritmlar va Ma'lumotlar Tuzilmasi", mentor: "Bekzod Yusupov", room: "Zoom", type: "online", icon: "brain", startMin: 50,  endMin: 90  },
+        { name: "System Design Asoslari", mentor: "Kamola Tosheva", room: "301-xona", type: "offline", icon: "cap", startMin: 100, endMin: 140 },
+        { name: "Frontend Development Amaliyoti", mentor: "Malika Yorova", room: "210-xona", type: "offline", icon: "layout", startMin: 150, endMin: 190 },
+        { name: "Ma'lumotlar Bazasi Dizayni", mentor: "Sardor Qodirov", room: "Zoom", type: "online", icon: "db", startMin: 200, endMin: 240 },
+        { name: "DevOps va CI/CD Asoslari", mentor: "Javlon Nematov", room: "105-xona", type: "offline", icon: "server", startMin: 250, endMin: 290 }
+    ];
+    const TOTAL_VIRTUAL_MIN = 290;
+    const CYCLE_MS = 180000; // butun kun 3 daqiqada aylanadi (demo, avval 30 soniya edi — juda tez edi)
+    const cycleAnchor = Date.now();
+
+    function virtualMinutes() {
+        const elapsed = (Date.now() - cycleAnchor) % CYCLE_MS;
+        return (elapsed / CYCLE_MS) * TOTAL_VIRTUAL_MIN;
+    }
+
+    function fmtMin(min) {
+        const totalMin = 9 * 60 + Math.round(min);
+        const h = Math.floor(totalMin / 60) % 24;
+        const m = totalMin % 60;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    }
+
+    const listEl = document.getElementById('lesson-list');
+
+    function render() {
+        const vm = virtualMinutes();
+
+        const withStatus = lessons.map(l => {
+            let status, pct, stateText;
+            if (vm < l.startMin) {
+                status = 'upcoming';
+                pct = 0;
+                const minsLeft = Math.ceil(l.startMin - vm);
+                stateText = minsLeft <= 8 ? `${minsLeft} daq. qoldi` : `Soat ${fmtMin(l.startMin)}`;
+            } else if (vm >= l.startMin && vm <= l.endMin) {
+                status = 'ongoing';
+                pct = ((vm - l.startMin) / (l.endMin - l.startMin)) * 100;
+                stateText = `Davom etmoqda · ${Math.round(pct)}%`;
+            } else {
+                status = 'finished';
+                pct = 100;
+                stateText = 'Tugadi';
+            }
+            return { ...l, status, pct, stateText };
+        });
+
+        // tugagan darslar ro'yxat oxiriga tushadi, qolganlari asl tartibda
+        const ordered = [
+            ...withStatus.filter(l => l.status !== 'finished'),
+            ...withStatus.filter(l => l.status === 'finished')
+        ];
+
+        listEl.innerHTML = '';
+        ordered.forEach((l, idx) => {
+            const div = document.createElement('div');
+            // ro'yxatdagi birinchi hali tugamagan dars har doim tepada "yopishib" turadi —
+            // tanaffus vaqtida ham (ongoing bo'lmasa-da) joy bo'sh qolmaydi; u tugashi bilan
+            // keyingi dars avtomatik ravishda shu o'ringa (va shu tarzda fixed holatga) o'tadi.
+            // Barcha darslar tugagach, pinned hech kimga berilmaydi — ro'yxat erkin scroll bo'ladi.
+            const isPinned = idx === 0 && l.status !== 'finished';
+            div.className = `lesson-item ${l.status}${isPinned ? ' pinned' : ''}`;
+            div.innerHTML = `
+                <div class="l-head">
+                    <div class="subj-ic">${ICONS[l.icon]}</div>
+                    <div class="l-title-wrap">
+                        <div class="l-kind">${l.mentor}</div>
+                        <div class="l-title">${l.name}</div>
+                    </div>
+                    <div class="badge-col">
+                        <span class="status-badge ${l.status}">${l.status === 'ongoing' ? 'Hozir' : l.status === 'finished' ? 'Tugadi' : 'Keyin'}</span>
+                    </div>
+                </div>
+                <div class="dates-row">
+                    <div class="date-col"><div class="l">Xona</div><div class="v">${l.room}</div></div>
+                    <div class="date-col"><div class="l">Boshlanish</div><div class="v">${fmtMin(l.startMin)}</div></div>
+                    <div class="date-col"><div class="l">Tugash</div><div class="v">${fmtMin(l.endMin)}</div></div>
+                </div>
+                <div class="progress-block">
+                    <div class="progress-label-row"><span class="l">Progress</span><span class="state">${l.stateText}</span></div>
+                    <div class="progress-track"><div class="progress-fill" style="width:${l.pct}%"></div></div>
+                </div>
+            `;
+            listEl.appendChild(div);
+        });
+    }
+
+    render();
+    setInterval(render, 150); // silliq animatsiya uchun tez-tez yangilanadi
+
+    // ============ PROFILE: guruhlar dropdown ============
+    const studentGroups = [
+        { name: "BE-24-3", active: true },
+        { name: "Algo-Club-14", active: false },
+        { name: "System-Design-Intensive", active: false }
+    ];
+    const listWrap = document.getElementById('group-dropdown-list');
+    studentGroups.forEach(g => {
+        const item = document.createElement('div');
+        item.className = 'group-dropdown-item' + (g.active ? ' active' : '');
+        item.textContent = g.active ? `${g.name} (joriy)` : g.name;
+        listWrap.appendChild(item);
+    });
+    document.getElementById('group-more').textContent = `+${studentGroups.length - 1}`;
+
+    // "+N" tugmasi bosilganda ro'yxat ochiladi/yopiladi (hover emas, faqat click)
+    const groupMoreBtn = document.getElementById('group-more');
+    const groupDropdownEl = document.querySelector('.group-dropdown');
+    groupMoreBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        groupDropdownEl.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+        if (!groupDropdownEl.contains(e.target) && e.target !== groupMoreBtn) {
+            groupDropdownEl.classList.remove('open');
+        }
+    });
+
+    // ============ MINI CALENDAR ============
+    const dayNames = ['dush','sesh','chor','pay','jum','shan','yak'];
+    const monthNames = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+    const lessonCounts = [4, 3, 4, 2, 3, 0, 0];
+    const today = new Date();
+    const todayIdx = (today.getDay() + 6) % 7;
+    const monday = new Date(today.getTime() - todayIdx * 86400000);
+    monday.setHours(0,0,0,0);
+    const sunday = new Date(monday.getTime() + 6 * 86400000);
+
+    const calMonthLabel =
+        monday.getMonth() === sunday.getMonth()
+            ? monthNames[monday.getMonth()]
+            : `${monthNames[monday.getMonth()]} – ${monthNames[sunday.getMonth()]}`;
+    document.getElementById('cal-month-label').textContent = calMonthLabel;
+    const calMonthLabel2El = document.getElementById('cal-month-label-2');
+    if (calMonthLabel2El) calMonthLabel2El.textContent = calMonthLabel;
+
+    function buildWeekRow(containerId) {
+        const calRow = document.getElementById(containerId);
+        if (!calRow) return;
+        dayNames.forEach((d, i) => {
+            const dayDate = new Date(monday.getTime() + i * 86400000);
+            const count = lessonCounts[i];
+            const el = document.createElement('div');
+            el.className = 'cal-day' + (i === todayIdx ? ' today' : '') + (count > 0 ? ' has-lessons' : '');
+            el.style.setProperty('--bar-h', (count > 0 ? Math.min(20, 7 + count * 3) : 3) + 'px');
+            const countLabel = count > 0 ? `${count} ta dars` : "Dars yo'q";
+            el.innerHTML = `
+                <span class="cal-day-name">${d}</span>
+                <span class="cal-date-circle">${dayDate.getDate()}</span>
+                <div class="cal-load-wrap">
+                    <div class="cal-load-count">${countLabel}</div>
+                    <div class="cal-load-bar"></div>
+                </div>
+            `;
+            calRow.appendChild(el);
+        });
+    }
+
+    buildWeekRow('cal-row');
+    buildWeekRow('cal-row-2');
+
+    // ============ STATS SLIDERS (2 ta card, har biri mustaqil slide qiladi) ============
+    function buildSlideBox(containerId, panes, intervalMs) {
+        const box = document.getElementById(containerId);
+        const viewport = document.createElement('div');
+        viewport.className = 'slide-viewport';
+        const track = document.createElement('div');
+        track.className = 'slide-track';
+
+        panes.forEach(p => {
+            const pane = document.createElement('div');
+            pane.className = 'slide-pane';
+            pane.innerHTML = `
+                <div class="stat-head">
+                    <span class="l">${p.l}</span>
+                    <div class="ic" style="background:${p.bg};color:${p.color}">${p.icon}</div>
+                </div>
+                <div class="n">${p.n}</div>
+            `;
+            track.appendChild(pane);
+        });
+        viewport.appendChild(track);
+        box.appendChild(viewport);
+
+        const dots = document.createElement('div');
+        dots.className = 'dots';
+        panes.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.addEventListener('click', () => go(i));
+            dots.appendChild(d);
+        });
+        box.appendChild(dots);
+
+        let idx = 0;
+        function go(i) {
+            idx = i;
+            track.style.transform = `translateY(-${i * 100}%)`;
+            [...dots.children].forEach((d, j) => d.classList.toggle('active', j === i));
+        }
+        setInterval(() => go((idx + 1) % panes.length), intervalMs);
+    }
+
+    buildSlideBox('stat-box-2', [
+        { icon: checkIcon, bg: 'var(--success-soft)', color: 'var(--success)', n: '4', l: "Bu hafta qatnashdi" },
+        { icon: `<svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>`, bg: 'var(--warn-soft)', color: 'var(--warn)', n: '1', l: "Bu hafta kech qoldi" },
+        { icon: `<svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`, bg: 'var(--danger-soft)', color: 'var(--danger)', n: '0', l: "Bu hafta kelmadi" }
+    ], 4000);
+
+    // 3-statistika hali yakuniy tasdiqlanmagan — shuning uchun bo'sh (empty) holatda ko'rsatiladi
+    function buildEmptyBox(containerId, text) {
+        const box = document.getElementById(containerId);
+        const dashIcon = `<svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4M12 15.5h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/></svg>`;
+        box.innerHTML = `
+            <div class="stat-head">
+                <span class="l">${text}</span>
+                <div class="ic">${dashIcon}</div>
+            </div>
+            <div class="n">—</div>
+        `;
+    }
+
+    buildEmptyBox('stat-box-3', "Hozircha ma'lumot yo'q");
+
+    // ============ TEZKOR HAVOLALAR (Telegram) ============
+    const telegramIcon = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.5L2.7 10.8c-.9.35-.9 1.6.02 1.9l4.56 1.46 1.76 5.66c.24.77 1.2.99 1.76.4l2.47-2.6 4.79 3.5c.7.5 1.7.14 1.9-.7l3.4-15.6c.2-.98-.8-1.75-1.86-1.32zM8.5 13.5l8.3-6.8c.4-.3.8.15.45.5l-6.8 6.5-.25 3.6-1.7-3.8z"/></svg>`;
+    const arrowIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    const quickLinks = [
+        { title: "Talabalarga qo'llab-quvvatlash", sub: "@PDP_STUDENT_SUPPORT_BOT", url: "https://t.me/PDP_STUDENT_SUPPORT_BOT" },
+        { title: "Talabalar ishlari bo'limi", sub: "@studentaffairspdpu", url: "https://t.me/studentaffairspdpu" }
+    ];
+
+    function buildQuickLinks(containerId, items, intervalMs) {
+        const box = document.getElementById(containerId);
+        const viewport = document.createElement('div');
+        viewport.className = 'ql-viewport';
+        const track = document.createElement('div');
+        track.className = 'ql-track';
+
+        items.forEach(item => {
+            const pane = document.createElement('div');
+            pane.className = 'ql-pane';
+            pane.innerHTML = `
+                <a class="ql-link" href="${item.url}" target="_blank" rel="noopener">
+                    <div class="ql-ic">${telegramIcon}</div>
+                    <div class="ql-body">
+                        <div class="ql-title">${item.title}</div>
+                        <div class="ql-sub">${item.sub}</div>
+                    </div>
+                    <div class="ql-arrow">${arrowIcon}</div>
+                </a>
+            `;
+            track.appendChild(pane);
+        });
+        viewport.appendChild(track);
+        box.appendChild(viewport);
+
+        // Tezkor havolalarda dot-indikatorlar shart emas — shu sabab bu yerda
+        // (buildSlideBox'dan farqli o'laroq) dots elementi umuman yaratilmaydi.
+        let idx = 0;
+        function go(i) {
+            idx = i;
+            track.style.transform = `translateY(-${i * 100}%)`;
+        }
+        setInterval(() => go((idx + 1) % items.length), intervalMs);
+    }
+
+    buildQuickLinks('quick-links-slider', quickLinks, 4000);
+
+    // ============ BUGUNGI DARSLAR CARDINI O'NG USTUN BALANDLIGIGA TENGLASHTIRISH ============
+    // Card doim right-col (Bu hafta + Statistika + Bildirishnomalar + Tezkor havolalar)
+    // bilan bir xil balandlikda tugaydi — darslar 1 ta yoki 10 ta bo'lishidan qat'i nazar
+    // qizil chegaradan (Tezkor havolalar pastki cheti) hech qachon o'tib ketmaydi.
+    const DASH_GRID_BREAKPOINT = 860; // .dash-grid bitta ustunga tushadigan CSS chegarasi bilan bir xil
+
+    // Profile cardi doim kalendar cardi ("Bu hafta") bilan bir xil balandlikda bo'ladi.
+    // Bu avval hisoblanishi kerak — chunki bugungi darslar cardi balandligi
+    // profile cardining balandligiga qarab hisoblanadi (pastda).
+    // ============ PROFIL: kun vaqtiga qarab salomlashish ============
+    const motivationTails = [
+        "Bugun ham bir qadam oldinga!",
+        "O'rganishda davom eting!",
+        "Bugun yangi narsa o'rganing!",
+        "Harakat — natijaning boshlanishi!",
+        "O'rganing. Rivojlaning. Yuksaling!",
+        "Kichik qadamlar, katta natijalar!"
+    ];
+
+    function setProfileGreeting() {
+        const el = document.getElementById('profile-greeting');
+        if (!el) return;
+
+        const hour = new Date().getHours();
+        let greeting;
+        if (hour >= 5 && hour < 11) {
+            greeting = "Xayrli tong";
+        } else if (hour >= 11 && hour < 17) {
+            greeting = "Xayrli kun";
+        } else if (hour >= 17 && hour < 22) {
+            greeting = "Xayrli kech";
+        } else {
+            greeting = "Xayrli tun";
+        }
+
+        const tail = motivationTails[Math.floor(Math.random() * motivationTails.length)];
+        el.textContent = `${greeting}, ${tail} 👋`;
+    }
+
+    setProfileGreeting();
+
+    function syncProfileCardHeight() {
+        const profileCard = document.getElementById('profile-card');
+        const calendarCard = document.getElementById('calendar-card');
+        if (!profileCard || !calendarCard) return;
+
+        if (window.innerWidth <= DASH_GRID_BREAKPOINT) {
+            profileCard.style.height = '';
+            return;
+        }
+
+        // Avval tiklaymiz — shu holatda tabiiy (kontentga mos) balandlikni to'g'ri o'lchaymiz
+        profileCard.style.height = '';
+        const naturalHeight = profileCard.offsetHeight;
+        const targetHeight = Math.max(naturalHeight, calendarCard.offsetHeight);
+        profileCard.style.height = targetHeight + 'px';
+    }
+
+    function syncLessonsCardHeight() {
+        const lessonsCard = document.getElementById('bugungi-card');
+        const leftCol = document.querySelector('.left-col');
+        const rightCol = document.querySelector('.right-col');
+        if (!lessonsCard || !leftCol || !rightCol) return;
+
+        // Kichik ekranda ustunlar bittaga tushib ketadi — balandlikni cheklash shart emas
+        if (window.innerWidth <= DASH_GRID_BREAKPOINT) {
+            lessonsCard.style.height = '';
+            return;
+        }
+
+        const profileCard = leftCol.querySelector('.card');
+        if (!profileCard) return;
+
+        // Avval tiklaymiz — aks holda avvalgi o'rnatilgan balandlik yangi o'lchovga xalaqit beradi
+        lessonsCard.style.height = '';
+
+        const gap = 16; // .card + .card { margin-top: 16px } bilan mos
+        const available = rightCol.offsetHeight - profileCard.offsetHeight - gap;
+        if (available > 0) {
+            lessonsCard.style.height = available + 'px';
+        }
+    }
+
+    function syncDashboardHeights() {
+        syncProfileCardHeight();
+        syncLessonsCardHeight();
+    }
+
+    window.addEventListener('resize', syncDashboardHeights);
+    window.addEventListener('load', syncDashboardHeights);
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(syncDashboardHeights);
+    }
+    syncDashboardHeights();
+
+    // ================================================================
+    // ============ MOBIL SAHIFALAR: BOTTOM NAV + PAGE SWITCH =========
+    // ================================================================
+    const navButtons = document.querySelectorAll('.bn-item[data-page]');
+    const pages = document.querySelectorAll('.app-page');
+
+    function showPage(pageId) {
+        pages.forEach(p => p.classList.toggle('active', p.id === pageId));
+        navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    }
+
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => showPage(btn.dataset.page));
+    });
+
+    // ============ DAVOMAT SAHIFASI (demo ma'lumot) ============
+    const attendanceRecords = [
+        { day: '19', mon: 'sen', title: 'Java Backend Development', time: '09:00 – 09:40', status: 'present' },
+        { day: '19', mon: 'sen', title: 'Algoritmlar va MT',        time: '09:50 – 10:30', status: 'present' },
+        { day: '18', mon: 'sen', title: 'System Design Asoslari',   time: '10:40 – 11:20', status: 'late' },
+        { day: '18', mon: 'sen', title: 'Frontend Amaliyoti',       time: '11:30 – 12:10', status: 'present' },
+        { day: '17', mon: 'sen', title: "Ma'lumotlar Bazasi",       time: '12:20 – 13:00', status: 'absent' },
+        { day: '17', mon: 'sen', title: 'DevOps va CI/CD',          time: '13:10 – 13:50', status: 'present' },
+        { day: '16', mon: 'sen', title: 'Java Backend Development', time: '09:00 – 09:40', status: 'present' },
+        { day: '15', mon: 'sen', title: 'Algoritmlar va MT',        time: '09:50 – 10:30', status: 'absent' }
+    ];
+
+    const attBadgeLabel = { present: 'Keldi', late: 'Kech qoldi', absent: 'Kelmadi' };
+    const attListEl = document.getElementById('attendance-list');
+    if (attListEl) {
+        attListEl.innerHTML = attendanceRecords.map(r => `
+            <div class="att-item">
+                <div class="att-date"><div class="d">${r.day}</div><div class="m">${r.mon}</div></div>
+                <div class="att-body">
+                    <div class="att-title">${r.title}</div>
+                    <div class="att-time">${r.time}</div>
+                </div>
+                <div class="att-badge ${r.status}">${attBadgeLabel[r.status]}</div>
+            </div>
+        `).join('');
+    }
+
+    // ============ BAHOLAR SAHIFASI (demo ma'lumot) ============
+    const grades = [
+        { name: 'Java Backend Development', score: 92 },
+        { name: "Algoritmlar va Ma'lumotlar Tuzilmasi", score: 78 },
+        { name: 'System Design Asoslari', score: 85 },
+        { name: 'Frontend Development Amaliyoti', score: 95 },
+        { name: "Ma'lumotlar Bazasi Dizayni", score: 71 },
+        { name: 'DevOps va CI/CD Asoslari', score: 88 }
+    ];
+
+    function gradeColor(score) {
+        if (score >= 85) return { fg: 'var(--success)', bg: 'var(--success-soft)', bar: 'var(--success)' };
+        if (score >= 65) return { fg: 'var(--warn)', bg: 'var(--warn-soft)', bar: 'var(--warn)' };
+        return { fg: 'var(--danger)', bg: 'var(--danger-soft)', bar: 'var(--danger)' };
+    }
+
+    const gradesListEl = document.getElementById('grades-list');
+    if (gradesListEl) {
+        gradesListEl.innerHTML = grades.map(g => {
+            const c = gradeColor(g.score);
+            return `
+                <div class="grade-item">
+                    <div class="grade-top">
+                        <span class="grade-name">${g.name}</span>
+                        <span class="grade-score"><b style="color:${c.fg}">${g.score}</b> / 100</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" style="width:${g.score}%;background:${c.bar}"></div></div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // ============ KALENDAR SAHIFASI: OYLIK KO'RINISH ============
+    const monthLessonsMap = {
+        // kun raqami -> shu kundagi darslar soni (demo)
+        1: 3, 2: 4, 3: 0, 4: 2, 5: 3, 8: 4, 9: 3, 10: 4, 11: 2, 12: 3,
+        15: 4, 16: 3, 17: 4, 18: 2, 19: 3, 22: 4, 23: 3, 24: 4, 25: 2, 26: 3
+    };
+
+    function buildMonthGrid() {
+        const grid = document.getElementById('month-grid');
+        if (!grid) return;
+
+        const year = today.getFullYear();
+        const month = today.getMonth();
+        const firstOfMonth = new Date(year, month, 1);
+        const startOffset = (firstOfMonth.getDay() + 6) % 7; // dushanbadan boshlab
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const namesRow = document.createElement('div');
+        namesRow.className = 'month-grid-names';
+        namesRow.innerHTML = dayNames.map(d => `<span>${d}</span>`).join('');
+        grid.parentElement.insertBefore(namesRow, grid);
+
+        for (let i = 0; i < startOffset; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'month-cell empty';
+            grid.appendChild(empty);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+            const cell = document.createElement('div');
+            const isToday = d === today.getDate();
+            const count = monthLessonsMap[d] || 0;
+            cell.className = 'month-cell' + (isToday ? ' today' : '');
+            cell.dataset.day = d;
+            cell.innerHTML = `${d}` + (count > 0 ? '<span class="dot"></span>' : '');
+            cell.addEventListener('click', () => selectMonthDay(d, count));
+            grid.appendChild(cell);
+        }
+
+        selectMonthDay(today.getDate(), monthLessonsMap[today.getDate()] || 0);
+    }
+
+    function selectMonthDay(day, count) {
+        document.querySelectorAll('.month-cell').forEach(c => {
+            c.classList.toggle('selected', Number(c.dataset.day) === day);
+        });
+        const titleEl = document.getElementById('day-detail-title');
+        const listEl = document.getElementById('day-detail-list');
+        if (!titleEl || !listEl) return;
+
+        const isToday = day === today.getDate();
+        titleEl.textContent = isToday ? "Bugungi darslar" : `${day}-${monthNames[today.getMonth()]} darslari`;
+
+        if (count > 0) {
+            const items = lessons.slice(0, Math.min(count, lessons.length));
+            listEl.innerHTML = items.map(l => `
+                <div class="att-item">
+                    <div class="subj-ic" style="width:36px;height:36px;border-radius:10px;">${ICONS[l.icon]}</div>
+                    <div class="att-body" style="margin-left:2px;">
+                        <div class="att-title">${l.name}</div>
+                        <div class="att-time">${l.mentor} · ${l.room}</div>
+                    </div>
+                    <div class="att-badge present" style="background:var(--info-soft);color:var(--info);">${fmtMin(l.startMin)}</div>
+                </div>
+            `).join('');
+        } else {
+            listEl.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px 0;">Bu kunga darslar mavjud emas</div>`;
+        }
+    }
+
+    buildMonthGrid();
+
+    // ================================================================
+    // ============================ QR SKANER =========================
+    // ================================================================
+    (function () {
+        const overlay = document.getElementById('qr-overlay');
+        const scanBtn = document.getElementById('qr-scan-btn');
+        const closeBtn = document.getElementById('qr-close-btn');
+        const video = document.getElementById('qr-video');
+        const frameEl = document.getElementById('qr-frame');
+        const markCanvas = document.getElementById('qr-mark-canvas');
+        const decodeCanvas = document.getElementById('qr-decode-canvas');
+        const statusPill = document.getElementById('qr-status-pill');
+        const errorBox = document.getElementById('qr-error');
+        const errorMsg = document.getElementById('qr-error-msg');
+
+        if (!overlay || !scanBtn) return;
+
+        let stream = null;
+        let rafId = null;
+        let scanning = false;
+        let lastResult = '';
+        let resultLockUntil = 0;
+
+        function setStatus(text, ok) {
+            if (!statusPill) return;
+            statusPill.textContent = text;
+            statusPill.classList.toggle('ok', !!ok);
+            statusPill.classList.add('show');
+            clearTimeout(setStatus._t);
+            setStatus._t = setTimeout(() => statusPill.classList.remove('show'), ok ? 2200 : 1600);
+        }
+
+        function sizeCanvases() {
+            const rect = video.getBoundingClientRect();
+            [markCanvas].forEach(c => {
+                c.width = rect.width;
+                c.height = rect.height;
+            });
+        }
+
+        function clearMarks() {
+            const ctx = markCanvas.getContext('2d');
+            ctx.clearRect(0, 0, markCanvas.width, markCanvas.height);
+        }
+
+        // video koordinatalarini ekrandagi (object-fit:cover) koordinatalarga o'giradi
+        function mapPoint(pt, vw, vh, cw, ch) {
+            const scale = Math.max(cw / vw, ch / vh);
+            const offX = (cw - vw * scale) / 2;
+            const offY = (ch - vh * scale) / 2;
+            return { x: pt.x * scale + offX, y: pt.y * scale + offY };
+        }
+
+        function drawFoundOutline(loc, vw, vh) {
+            const ctx = markCanvas.getContext('2d');
+            clearMarks();
+            const cw = markCanvas.width, ch = markCanvas.height;
+            const pts = [loc.topLeftCorner, loc.topRightCorner, loc.bottomRightCorner, loc.bottomLeftCorner]
+                .map(p => mapPoint(p, vw, vh, cw, ch));
+            ctx.beginPath();
+            ctx.moveTo(pts[0].x, pts[0].y);
+            pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+            ctx.closePath();
+            ctx.strokeStyle = '#5EE38B';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = 'rgba(94,227,139,.8)';
+            ctx.shadowBlur = 10;
+            ctx.stroke();
+            pts.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#5EE38B';
+                ctx.fill();
+            });
+        }
+
+        function tick() {
+            if (!scanning) return;
+            if (video.readyState === video.HAVE_ENOUGH_DATA && window.jsQR) {
+                const vw = video.videoWidth, vh = video.videoHeight;
+                if (vw && vh) {
+                    const dctx = decodeCanvas.getContext('2d', { willReadFrequently: true });
+                    decodeCanvas.width = vw;
+                    decodeCanvas.height = vh;
+                    dctx.drawImage(video, 0, 0, vw, vh);
+                    const imgData = dctx.getImageData(0, 0, vw, vh);
+                    const code = window.jsQR(imgData.data, vw, vh, { inversionAttempts: 'dontInvert' });
+
+                    if (code && code.data) {
+                        drawFoundOutline(code.location, vw, vh);
+                        frameEl.classList.add('found');
+                        if (navigator.vibrate) navigator.vibrate(60);
+
+                        const now = Date.now();
+                        if (code.data !== lastResult || now > resultLockUntil) {
+                            lastResult = code.data;
+                            resultLockUntil = now + 2500;
+                            setStatus('✓ Aniqlandi: ' + code.data, true);
+                        }
+                    } else {
+                        clearMarks();
+                        frameEl.classList.remove('found');
+                    }
+                }
+            }
+            rafId = requestAnimationFrame(tick);
+        }
+
+        async function openScanner() {
+            overlay.classList.add('open');
+            errorBox.classList.remove('show');
+            lastResult = '';
+            resultLockUntil = 0;
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: { ideal: 'environment' } },
+                    audio: false
+                });
+                video.srcObject = stream;
+                await video.play();
+                sizeCanvases();
+                scanning = true;
+                rafId = requestAnimationFrame(tick);
+            } catch (err) {
+                errorMsg.textContent = (err && err.name === 'NotAllowedError')
+                    ? "QR skanerdan foydalanish uchun brauzer sozlamalaridan kameraga ruxsat bering."
+                    : "Kamerani ishga tushirib bo'lmadi. Qurilmangizda kamera mavjudligini tekshiring.";
+                errorBox.classList.add('show');
+            }
+        }
+
+        function closeScanner() {
+            scanning = false;
+            if (rafId) cancelAnimationFrame(rafId);
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+                stream = null;
+            }
+            clearMarks();
+            frameEl.classList.remove('found');
+            overlay.classList.remove('open');
+        }
+
+        scanBtn.addEventListener('click', openScanner);
+        closeBtn.addEventListener('click', closeScanner);
+        window.addEventListener('resize', () => { if (scanning) sizeCanvases(); });
+    })();
+</script>
+
+</body>
+</html>
