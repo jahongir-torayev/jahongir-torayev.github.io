@@ -881,7 +881,8 @@
         /* Mobil: ism-familiya navbar'dagi profil menyusiga, bildirishnomalar esa
            navbar'dagi qo'ng'iroqqa ko'chdi — shu sabab bu cardlar yashiriladi */
         #profile-card,
-        #notif-card { display: none; }
+        #notif-card,
+        #ql-card { display: none; }
 
         /* Mobil: darslar ichki scroll'siz, ixcham qatorlar ko'rinishida */
         #lesson-list { overflow: visible; max-height: none; }
@@ -1662,6 +1663,292 @@
         letter-spacing: 0;
     }
 
+    /* ================= DAVOMAT SAHIFASI ================= */
+    .att-nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 40px;
+        margin-bottom: 10px;
+    }
+
+    .att-back {
+        appearance: none;
+        flex: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .att-back:active { transform: scale(.93); }
+
+    .att-crumbs {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .att-crumbs button {
+        appearance: none;
+        border: none;
+        background: none;
+        padding: 6px 0;
+        font: inherit;
+        color: var(--ink-soft);
+        cursor: pointer;
+        flex: none;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .att-crumbs .sep { flex: none; color: var(--muted); }
+    .att-crumbs .cur { color: var(--ink); font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+
+    .att-sum { padding: 18px; margin-bottom: 14px; }
+    .att-sum-top { display: flex; align-items: center; gap: 16px; }
+    .att-sum-txt { min-width: 0; flex: 1; }
+    .att-sum-txt .t { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 21px; line-height: 1.2; letter-spacing: -.01em; }
+    .att-sum-txt .s { font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 4px; }
+    .att-sum .gr-stats-toggle { margin-top: 8px; }
+
+    .att-ring { position: relative; flex: none; display: flex; align-items: center; justify-content: center; }
+    .att-ring svg { position: absolute; inset: 0; }
+    .att-ring b { position: relative; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15px; }
+    .att-ring.lg b { font-size: 20px; }
+
+    .att-detail { margin-top: 10px; animation: grFade .2s ease; }
+    .att-detail[hidden] { display: none; }
+    .att-hls { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+
+    .att-hl {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--r-md);
+        background: var(--bg);
+    }
+
+    .att-hl-ic {
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+
+    .att-hl-good .att-hl-ic { color: var(--success); }
+    .att-hl-bad .att-hl-ic { color: var(--danger); }
+    .att-hl-neutral .att-hl-ic { color: var(--info); }
+    .att-hl-body { min-width: 0; flex: 1; }
+    .att-hl-body .l { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .att-hl-body .n { font-size: 13.5px; font-weight: 700; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .att-hl-pct { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 13px; padding: 3px 8px; border-radius: var(--r-pill); background: var(--surface); }
+    .att-hl-good .att-hl-pct { color: var(--success); }
+    .att-hl-bad .att-hl-pct { color: var(--danger); }
+
+    .att-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+    /* 5 ta count — bitta qatorda */
+    .att-counts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
+
+    .att-cnt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 8px 2px 7px;
+        border-radius: 11px;
+        background: var(--s);
+        min-width: 0;
+    }
+
+    .att-cnt b { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.1; color: var(--c); }
+    .att-cnt span { font-size: 9.5px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .att-cnt.zero { background: var(--bg); }
+    .att-cnt.zero b { color: var(--muted); }
+
+    /* modul / oy kartasi */
+    .att-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .att-row {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow);
+        padding: 14px 14px 8px;
+    }
+
+    .att-row-top { display: flex; align-items: center; gap: 14px; }
+    .att-row-top .att-ring b { font-size: 13px; }
+    .att-row-body { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .att-row-name { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 17px; line-height: 1.25; letter-spacing: -.01em; }
+    .att-row-name small { display: block; margin-top: 2px; font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+    .att-row .att-warn { position: static; }
+
+    .att-row-stats { margin-top: 12px; animation: grFade .2s ease; }
+    .att-row-stats[hidden] { display: none; }
+
+    .att-row-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        padding-top: 4px;
+        border-top: 1px solid var(--line);
+    }
+
+    .att-stat-btn, .att-go-btn {
+        appearance: none;
+        border: none;
+        background: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 40px;
+        padding: 0 4px;
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .att-stat-btn { color: var(--ink-soft); }
+    .att-stat-btn .chev { transition: transform .2s ease; }
+    .att-row.open .att-stat-btn { color: var(--ink); }
+    .att-row.open .att-stat-btn .chev { transform: rotate(180deg); }
+    .att-go-btn { color: var(--success); font-weight: 700; }
+
+    .att-card {
+        appearance: none;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px;
+        min-height: 150px;
+        text-align: left;
+        font-family: inherit;
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: transform .12s ease;
+    }
+
+    .att-card:active { transform: scale(.97); }
+
+    .att-card-name {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 13.5px;
+        line-height: 1.3;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .att-card-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        font-size: 11.5px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+
+    .att-warn {
+        position: absolute;
+        top: 12px;
+        right: 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--danger);
+        background: var(--danger-soft);
+        padding: 3px 7px 3px 5px;
+        border-radius: var(--r-pill);
+    }
+
+    .att-warn svg { width: 12px; height: 12px; }
+
+    /* kunlik ko'rinish: oy kalendari */
+    .att-cal { padding: 16px; }
+    .att-cal-head, .att-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+    .att-cal-head { margin-bottom: 6px; }
+    .att-cal-head span { text-align: center; font-size: 10.5px; font-weight: 600; color: var(--muted); }
+
+    .att-day {
+        appearance: none;
+        position: relative;
+        aspect-ratio: 1 / 1;
+        border: none;
+        border-radius: 10px;
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 700;
+        font-size: 12.5px;
+        color: #C4C4CE;
+        padding: 0;
+    }
+
+    .att-day.has { cursor: pointer; transition: transform .12s ease; }
+    .att-day.has:active { transform: scale(.9); }
+    .att-day.has i { position: absolute; bottom: 5px; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+    .att-day.st-present { background: var(--success-soft); color: var(--success); }
+    .att-day.st-late    { background: var(--warn-soft);    color: var(--warn); }
+    .att-day.st-absent  { background: var(--danger-soft);  color: var(--danger); }
+    .att-day.st-excused { background: var(--info-soft);    color: var(--info); }
+    .att-day.st-comp    { background: #F1EAFE;             color: #7C3AED; }
+    .att-day.sel { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px currentColor; }
+
+    .att-day-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 14px;
+        padding: 12px;
+        border-radius: var(--r-md);
+        background: var(--bg);
+    }
+
+    .att-day-info .d { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 14.5px; }
+    .att-day-info .w { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+    .att-st { font-size: 12px; font-weight: 700; padding: 5px 11px; border-radius: var(--r-pill); }
+
+    .att-cal-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 14px; font-size: 11px; color: var(--ink-soft); font-weight: 500; }
+    .att-cal-legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .att-cal-legend i { width: 7px; height: 7px; border-radius: 50%; }
+
     /* ---- Custom select (native <select> yashirin qoladi, qiymat unda saqlanadi) ---- */
     .cs { position: relative; }
 
@@ -2062,8 +2349,7 @@
         <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
     </button>
     <div class="tb-title">
-        <div class="tb-h" id="tb-title">Talaba paneli</div>
-        <div class="tb-sub" id="tb-sub"></div>
+        <div class="tb-h" id="tb-title">Nodira Ahmedova</div>
     </div>
     <div class="tb-actions">
         <button class="tb-btn tb-lang" type="button" data-pop="pop-lang" aria-label="Tilni o'zgartirish" aria-haspopup="menu" aria-expanded="false">
@@ -2275,7 +2561,7 @@
                 <a class="see-all" href="#">Hammasini ko'rish →</a>
             </div>
 
-            <div class="card">
+            <div class="card" id="ql-card">
                 <div class="card-title">Tezkor havolalar</div>
                 <div class="ql-box" id="quick-links-slider"></div>
             </div>
@@ -2288,44 +2574,25 @@
 
     <!-- ================= DAVOMAT (mobil sahifa) ================= -->
     <div class="app-page" id="page-attendance">
-
-        <div class="card">
-            <div class="card-title">Umumiy ko'rsatkich</div>
-            <div class="stats-row">
-                <div class="stat-box">
-                    <div class="stat-head">
-                        <span class="l">O'rtacha davomat</span>
-                        <div class="ic" style="background:var(--success-soft);color:var(--success)">
-                            <svg viewBox="0 0 24 24" fill="none"><path d="M4 19h16M7 15l3-4 3 2 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </div>
-                    </div>
-                    <div class="n">78%</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-head">
-                        <span class="l">Bu oy kechikish</span>
-                        <div class="ic" style="background:var(--warn-soft);color:var(--warn)">
-                            <svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>
-                        </div>
-                    </div>
-                    <div class="n">3</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-head">
-                        <span class="l">Bu oy kelmagan</span>
-                        <div class="ic" style="background:var(--danger-soft);color:var(--danger)">
-                            <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                        </div>
-                    </div>
-                    <div class="n">2</div>
-                </div>
+        <div class="gr-period">
+            <div class="gr-select">
+                <span class="gr-select-l" id="att-year-l">O'quv yili</span>
+                <select id="att-year" aria-labelledby="att-year-l"><option>2025-26</option><option>2024-25</option></select>
+            </div>
+            <div class="gr-select">
+                <span class="gr-select-l" id="att-sem-l">Semestr</span>
+                <select id="att-sem" aria-labelledby="att-sem-l"><option>Semester 2</option><option>Semester 1</option></select>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-title">So'nggi belgilar</div>
-            <div id="attendance-list"></div>
-        </div>
+        <!-- breadcrumb + orqaga (drill-down: modullar → oylar → kunlar) -->
+        <div class="att-nav" id="att-nav"></div>
+
+        <!-- asosiy statistika cardi (accordion) -->
+        <div class="card att-sum" id="att-sum"></div>
+
+        <!-- ro'yxat: modullar / oylar / kunlar -->
+        <div id="att-body"></div>
     </div>
 
     <!-- ================= KALENDAR (mobil sahifa) ================= -->
@@ -2841,24 +3108,9 @@
     const navButtons = document.querySelectorAll('.bn-item[data-page]');
     const pages = document.querySelectorAll('.app-page');
 
-    // navbar sarlavhasi har sahifada o'zgaradi (sahifa ichidagi alohida h1 endi kerak emas)
-    const weekDaysFull = ['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
-    const monthCap = m => monthNames[m].charAt(0).toUpperCase() + monthNames[m].slice(1);
-    const PAGE_META = {
-        'page-dashboard':  { title: 'Talaba paneli', sub: () => `${weekDaysFull[today.getDay()]}, ${today.getDate()}-${monthNames[today.getMonth()]}` },
-        'page-attendance': { title: 'Davomat',       sub: () => `${monthCap(today.getMonth())} ${today.getFullYear()}` },
-        'page-calendar':   { title: 'Kalendar',      sub: () => `${monthCap(today.getMonth())} ${today.getFullYear()}` },
-        'page-grades':     { title: 'Baholar',       sub: () => 'Joriy semestr' }
-    };
-
     function showPage(pageId) {
         pages.forEach(p => p.classList.toggle('active', p.id === pageId));
         navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
-        const meta = PAGE_META[pageId];
-        if (meta) {
-            document.getElementById('tb-title').textContent = meta.title;
-            document.getElementById('tb-sub').textContent = meta.sub();
-        }
         if (typeof closePop === 'function') closePop();
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
         if (pageId === 'page-grades' && typeof updateFilterScroll === 'function') {
@@ -2870,32 +3122,308 @@
         btn.addEventListener('click', () => showPage(btn.dataset.page));
     });
 
-    // ============ DAVOMAT SAHIFASI (demo ma'lumot) ============
-    const attendanceRecords = [
-        { day: '19', mon: 'sen', title: 'Java Backend Development', time: '09:00 – 09:40', status: 'present' },
-        { day: '19', mon: 'sen', title: 'Algoritmlar va MT',        time: '09:50 – 10:30', status: 'present' },
-        { day: '18', mon: 'sen', title: 'System Design Asoslari',   time: '10:40 – 11:20', status: 'late' },
-        { day: '18', mon: 'sen', title: 'Frontend Amaliyoti',       time: '11:30 – 12:10', status: 'present' },
-        { day: '17', mon: 'sen', title: "Ma'lumotlar Bazasi",       time: '12:20 – 13:00', status: 'absent' },
-        { day: '17', mon: 'sen', title: 'DevOps va CI/CD',          time: '13:10 – 13:50', status: 'present' },
-        { day: '16', mon: 'sen', title: 'Java Backend Development', time: '09:00 – 09:40', status: 'present' },
-        { day: '15', mon: 'sen', title: 'Algoritmlar va MT',        time: '09:50 – 10:30', status: 'absent' }
-    ];
+    // ================================================================
+    // ===== DAVOMAT SAHIFASI: modullar → oylar → kunlar (drill-down) =====
+    // ================================================================
+    const MIN_ATTENDANCE = 80; // shundan past bo'lsa "Davomat yetarli emas"
+    const ATT = {
+        present: { label: 'Kelgan',        color: 'var(--success)', soft: 'var(--success-soft)' },
+        late:    { label: 'Kechikkan',     color: 'var(--warn)',    soft: 'var(--warn-soft)' },
+        absent:  { label: 'Kelmagan',      color: 'var(--danger)',  soft: 'var(--danger-soft)' },
+        excused: { label: 'Sababli',       color: 'var(--info)',    soft: 'var(--info-soft)' },
+        comp:    { label: 'Kompensatsiya', color: '#7C3AED',        soft: '#F1EAFE' }
+    };
+    const ATT_KEYS = Object.keys(ATT);
+    const monthsUz = ['Yanvar','Fevral','Mart','Aprel','May','Iyun','Iyul','Avgust','Sentabr','Oktabr','Noyabr','Dekabr'];
+    const weekUzShort = ['Du','Se','Ch','Pa','Ju','Sh','Ya'];
+    const weekUzFull = ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
 
-    const attBadgeLabel = { present: 'Keldi', late: 'Kech qoldi', absent: 'Kelmadi' };
-    const attListEl = document.getElementById('attendance-list');
-    if (attListEl) {
-        attListEl.innerHTML = attendanceRecords.map(r => `
-            <div class="att-item">
-                <div class="att-date"><div class="d">${r.day}</div><div class="m">${r.mon}</div></div>
-                <div class="att-body">
-                    <div class="att-title">${r.title}</div>
-                    <div class="att-time">${r.time}</div>
-                </div>
-                <div class="att-badge ${r.status}">${attBadgeLabel[r.status]}</div>
-            </div>
-        `).join('');
+    // demo: semester bo'yicha modullar (backend javobi shu shaklda bo'lsa bas)
+    const attModules = [
+        { name: 'Big Data and Business Analytics',       present: 29, late: 0, absent: 1, excused: 0, comp: 0 },
+        { name: 'Business Process Modeling Tools',       present: 13, late: 0, absent: 2, excused: 0, comp: 0 },
+        { name: 'Dinshunoslik (Lecture)',                present: 14, late: 0, absent: 5, excused: 0, comp: 0 },
+        { name: 'Dinshunoslik (Seminar)',                present: 15, late: 0, absent: 0, excused: 0, comp: 0 },
+        { name: 'English',                               present: 49, late: 2, absent: 8, excused: 0, comp: 0 },
+        { name: 'Full Stack Development (Lecture)',      present: 14, late: 0, absent: 1, excused: 0, comp: 0 },
+        { name: 'Full Stack Development (Practice)',     present: 28, late: 0, absent: 2, excused: 0, comp: 0 },
+        { name: 'Introduction to Artificial Intelligence', present: 13, late: 0, absent: 1, excused: 0, comp: 0 },
+        { name: 'Study Skills',                          present: 12, late: 1, absent: 2, excused: 0, comp: 0 }
+    ];
+    const SEM_MONTHS = [{ y: 2026, m: 1 }, { y: 2026, m: 2 }, { y: 2026, m: 3 }, { y: 2026, m: 4 }]; // fev–may
+
+    const sumCounts = list => ATT_KEYS.reduce((o, k) => (o[k] = list.reduce((s, x) => s + (x[k] || 0), 0), o), {});
+    const totalOf = c => ATT_KEYS.reduce((s, k) => s + (c[k] || 0), 0);
+    // kelgan + kechikkan + sababli + kompensatsiya = qatnashgan hisoblanadi
+    const pctOf = c => { const t = totalOf(c); return t ? Math.round(((c.present + c.late + c.excused + c.comp) / t) * 100) : 0; };
+
+    // demo: modulning darslarini oylar va kunlarga taqsimlab chiqamiz (totallar mos keladi)
+    function buildModuleDays(mod, modIdx) {
+        const statuses = [];
+        ATT_KEYS.forEach(k => { for (let i = 0; i < (mod[k] || 0); i++) statuses.push(k); });
+        const good = statuses.filter(s => s === 'present');
+        const bad = statuses.filter(s => s !== 'present');
+        const total = statuses.length;
+        // oylar bo'yicha dars soni (fevral qisqa — kamroq)
+        const weights = [0.15, 0.28, 0.28, 0.29];
+        const perMonth = weights.map(w => Math.round(total * w));
+        perMonth[3] += total - perMonth.reduce((a, b) => a + b, 0);
+
+        const lessonsPerWeek = Math.max(1, Math.round(total / 15));
+        const wdays = [[0, 3], [1, 4], [2], [0, 2, 4], [1, 3]][modIdx % 5].slice(0, Math.max(1, lessonsPerWeek));
+        const seq = [];
+        // yomon belgilar semestr o'rtasi va oxiriga tarqaladi
+        const badSlots = new Set(bad.map((_, i) => Math.min(total - 1, Math.floor(total * (0.45 + (i / Math.max(1, bad.length)) * 0.5)))));
+        let gi = 0, bi = 0;
+        for (let i = 0; i < total; i++) seq.push(badSlots.has(i) && bi < bad.length ? bad[bi++] : (good[gi++] || bad[bi++]));
+
+        let cursor = 0;
+        return SEM_MONTHS.map((mm, mi) => {
+            const dim = new Date(mm.y, mm.m + 1, 0).getDate();
+            const cand = [];
+            for (let d = 1; d <= dim; d++) {
+                const wd = (new Date(mm.y, mm.m, d).getDay() + 6) % 7;
+                if (wd < 6) cand.push({ d, wd });
+            }
+            let pool = cand.filter(c => wdays.includes(c.wd));
+            if (pool.length < perMonth[mi]) pool = cand; // dars ko'p bo'lsa boshqa kunlar ham
+            const step = pool.length / Math.max(1, perMonth[mi]);
+            const days = [];
+            for (let i = 0; i < perMonth[mi]; i++) {
+                const c = pool[Math.min(pool.length - 1, Math.floor(i * step))];
+                days.push({ d: c.d, status: seq[cursor++] });
+            }
+            const counts = sumCounts(ATT_KEYS.map(k => ({ [k]: days.filter(x => x.status === k).length })));
+            return { ...mm, days, counts };
+        });
     }
+
+    const attData = attModules.map((m, i) => ({ ...m, months: buildModuleDays(m, i) }));
+
+    let attState = { level: 'modules', mod: null, month: null, detailOpen: false, day: null, openCard: null };
+
+    // ---------- UI yordamchilari ----------
+    function ringSvg(pct, size, stroke) {
+        const r = (size - stroke) / 2, c = 2 * Math.PI * r;
+        const color = pct >= MIN_ATTENDANCE ? 'var(--success)' : pct >= 60 ? 'var(--warn)' : 'var(--danger)';
+        const track = pct >= MIN_ATTENDANCE ? 'var(--success-soft)' : pct >= 60 ? 'var(--warn-soft)' : 'var(--danger-soft)';
+        return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
+            <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${track}" stroke-width="${stroke}"/>
+            <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round"
+                stroke-dasharray="${(pct / 100) * c} ${c}" transform="rotate(-90 ${size / 2} ${size / 2})"/>
+        </svg>`;
+    }
+
+    const ringBlock = (pct, size, stroke, cls) =>
+        `<div class="att-ring ${cls || ''}" style="width:${size}px;height:${size}px">${ringSvg(pct, size, stroke)}<b>${pct}%</b></div>`;
+
+    // 5 ta count bitta qatorda (uzun nom qisqartiriladi, to'liq nomi aria-label'da)
+    const ATT_SHORT = { present: 'Kelgan', late: 'Kechikkan', absent: 'Kelmagan', excused: 'Sababli', comp: 'Kompens.' };
+    const countsHtml = c => `<div class="att-counts">${ATT_KEYS.map(k => `
+        <div class="att-cnt${c[k] ? '' : ' zero'}" aria-label="${ATT[k].label}: ${c[k]}" style="--c:${ATT[k].color};--s:${ATT[k].soft}">
+            <b>${c[k]}</b><span>${ATT_SHORT[k]}</span>
+        </div>`).join('')}</div>`;
+
+    // modul / oy kartasi: halqa yonida nom, pastda "Statistika" (accordion) va drill-down tugmasi
+    function listCard({ key, idx, name, pct, counts, goAttr, goLabel }) {
+        const open = attState.openCard === key;
+        return `
+            <div class="att-row${open ? ' open' : ''}">
+                <div class="att-row-top">
+                    ${ringBlock(pct, 56, 6)}
+                    <div class="att-row-body">
+                        <div class="att-row-name">${name}</div>
+                        ${pct < MIN_ATTENDANCE ? `<span class="att-warn">${icAlert}Davomat yetarli emas</span>` : ''}
+                    </div>
+                </div>
+                <div class="att-row-stats" id="stats-${key}" ${open ? '' : 'hidden'}>${countsHtml(counts)}</div>
+                <div class="att-row-actions">
+                    <button class="att-stat-btn" type="button" data-stat="${key}" aria-expanded="${open}" aria-controls="stats-${key}">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 20V11M12 20V4M19 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        Statistika
+                        <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button class="att-go-btn" type="button" ${goAttr}="${idx}">${goLabel}${chevR}</button>
+                </div>
+            </div>`;
+    }
+
+    const icTrophy = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 4h8v5a4 4 0 01-8 0V4zM8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3M12 13v4M9 20h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const icAlert = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4.5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    const icCal = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    const icFlame = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21c-3.9 0-7-2.7-7-6.5 0-3 2-5 3.5-6.5.3 1.9 1.2 3 2.2 3.2C10 8 11.5 5 14 3c0 3 4.9 5.2 4.9 11 .1 4-3 7-6.9 7z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+    const chevR = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    const hlRow = (icon, tone, label, name, pct) => `
+        <div class="att-hl att-hl-${tone}">
+            <span class="att-hl-ic">${icon}</span>
+            <div class="att-hl-body"><div class="l">${label}</div><div class="n">${name}</div></div>
+            ${pct != null ? `<span class="att-hl-pct">${pct}</span>` : ''}
+        </div>`;
+
+    function summaryCard({ pct, title, sub, highlights, counts }) {
+        const open = attState.detailOpen;
+        return `
+            <div class="att-sum-top">
+                ${ringBlock(pct, 84, 9, 'lg')}
+                <div class="att-sum-txt">
+                    <div class="t">${title}</div>
+                    <div class="s">${sub}</div>
+                </div>
+            </div>
+            <button class="gr-stats-toggle" type="button" id="att-toggle" aria-expanded="${open}" aria-controls="att-detail">
+                <span>${open ? 'Yopish' : "Batafsil ko'rish"}</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="att-detail" id="att-detail" ${open ? '' : 'hidden'}>
+                <div class="att-hls">${highlights}</div>
+                ${countsHtml(counts)}
+            </div>`;
+    }
+
+    const bestWorst = items => {
+        const sorted = [...items].sort((a, b) => b.pct - a.pct);
+        return { best: sorted[0], worst: sorted[sorted.length - 1] };
+    };
+
+    // ---------- render ----------
+    function renderAttendance() {
+        const navEl = document.getElementById('att-nav');
+        const sumEl = document.getElementById('att-sum');
+        const bodyEl = document.getElementById('att-body');
+        const sem = document.getElementById('att-sem').value;
+        const year = document.getElementById('att-year').value;
+
+        if (attState.level === 'modules') {
+            const items = attData.map((m, i) => ({ i, name: m.name, pct: pctOf(m), months: m.months.length }));
+            const all = sumCounts(attData);
+            const { best, worst } = bestWorst(items);
+
+            navEl.innerHTML = `<div class="att-crumbs"><span class="cur">Modullar</span></div>`;
+            sumEl.innerHTML = summaryCard({
+                pct: pctOf(all),
+                title: "Semestr bo'yicha davomat",
+                sub: `${attData.length} ta fan · ${sem}`,
+                counts: all,
+                highlights:
+                    hlRow(icTrophy, 'good', "Eng ko'p qatnashilgan fan", best.name, best.pct + '%') +
+                    hlRow(icAlert, 'bad', 'Eng kam qatnashilgan fan', worst.name, worst.pct + '%')
+            });
+            bodyEl.innerHTML = `<div class="att-list">${items.map(it => listCard({
+                key: 'm' + it.i, idx: it.i, name: it.name, pct: it.pct, counts: sumCounts([attData[it.i]]),
+                goAttr: 'data-mod', goLabel: "Oylarni ko'rish"
+            })).join('')}</div>`;
+        }
+
+        if (attState.level === 'months') {
+            const mod = attData[attState.mod];
+            const items = mod.months.map((mm, i) => ({ i, name: monthsUz[mm.m], pct: pctOf(mm.counts), lessons: totalOf(mm.counts) }));
+            const { best, worst } = bestWorst(items);
+
+            navEl.innerHTML = backRow([['Modullar', 'modules'], [mod.name]]);
+            sumEl.innerHTML = summaryCard({
+                pct: pctOf(mod),
+                title: mod.name,
+                sub: `${sem} · ${year}`,
+                counts: sumCounts([mod]),
+                highlights:
+                    hlRow(icTrophy, 'good', 'Eng yaxshi oy', best.name, best.pct + '%') +
+                    hlRow(icAlert, 'bad', 'Eng yomon oy', worst.name, worst.pct + '%')
+            });
+            bodyEl.innerHTML = `<div class="att-list">${items.map(it => listCard({
+                key: 'o' + it.i, idx: it.i, name: `${it.name} <small>${it.lessons} ta dars</small>`, pct: it.pct,
+                counts: mod.months[it.i].counts, goAttr: 'data-month', goLabel: "Kunlarni ko'rish"
+            })).join('')}</div>`;
+        }
+
+        if (attState.level === 'days') {
+            const mod = attData[attState.mod];
+            const mm = mod.months[attState.month];
+            const byDay = Object.fromEntries(mm.days.map(x => [x.d, x.status]));
+            // eng uzun ketma-ket qatnashish
+            let streak = 0, run = 0;
+            mm.days.forEach(x => { run = x.status === 'absent' ? 0 : run + 1; streak = Math.max(streak, run); });
+            if (attState.day == null || !byDay[attState.day]) attState.day = mm.days.length ? mm.days[mm.days.length - 1].d : null;
+
+            navEl.innerHTML = backRow([['Modullar', 'modules'], [mod.name, 'months'], [monthsUz[mm.m]]]);
+            sumEl.innerHTML = summaryCard({
+                pct: pctOf(mm.counts),
+                title: `${monthsUz[mm.m]} ${mm.y}`,
+                sub: mod.name,
+                counts: mm.counts,
+                highlights:
+                    hlRow(icCal, 'neutral', 'Jami darslar', `${mm.days.length} ta dars`) +
+                    hlRow(icFlame, 'good', 'Eng uzun ketma-ket davomat', `${streak} ta dars ketma-ket`)
+            });
+
+            const first = (new Date(mm.y, mm.m, 1).getDay() + 6) % 7;
+            const dim = new Date(mm.y, mm.m + 1, 0).getDate();
+            let cells = '';
+            for (let i = 0; i < first; i++) cells += '<span class="att-day empty"></span>';
+            for (let d = 1; d <= dim; d++) {
+                const st = byDay[d];
+                cells += st
+                    ? `<button class="att-day has st-${st}${attState.day === d ? ' sel' : ''}" type="button" data-day="${d}" aria-label="${d}-${monthsUz[mm.m].toLowerCase()}: ${ATT[st].label}" aria-pressed="${attState.day === d}">${d}<i></i></button>`
+                    : `<span class="att-day">${d}</span>`;
+            }
+            const selSt = byDay[attState.day];
+            const selWd = attState.day ? (new Date(mm.y, mm.m, attState.day).getDay() + 6) % 7 : 0;
+
+            bodyEl.innerHTML = `
+                <div class="card att-cal">
+                    <div class="att-cal-head">${weekUzShort.map(w => `<span>${w}</span>`).join('')}</div>
+                    <div class="att-cal-grid">${cells}</div>
+                    ${selSt ? `<div class="att-day-info">
+                        <div><div class="d">${attState.day}-${monthsUz[mm.m].toLowerCase()}</div><div class="w">${weekUzFull[selWd]}</div></div>
+                        <span class="att-st" style="background:${ATT[selSt].soft};color:${ATT[selSt].color}">${ATT[selSt].label}</span>
+                    </div>` : ''}
+                    <div class="att-cal-legend">${ATT_KEYS.map(k => `<span><i style="background:${ATT[k].color}"></i>${ATT[k].label}</span>`).join('')}</div>
+                </div>`;
+        }
+    }
+
+    function backRow(crumbs) {
+        const back = crumbs.length > 2 ? 'months' : 'modules';
+        return `
+            <button class="att-back" type="button" data-go="${back}" aria-label="Orqaga">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="att-crumbs">${crumbs.map((c, i) => i === crumbs.length - 1
+                ? `<span class="cur">${c[0]}</span>`
+                : `<button type="button" data-go="${c[1]}">${c[0]}</button><span class="sep">›</span>`).join('')}</div>`;
+    }
+
+    function attGo(patch) {
+        attState = { ...attState, detailOpen: false, openCard: null, ...patch };
+        renderAttendance();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('page-attendance').addEventListener('click', e => {
+        const t = e.target;
+        if (t.closest('#att-toggle')) {
+            attState.detailOpen = !attState.detailOpen;
+            renderAttendance();
+            return;
+        }
+        const stat = t.closest('[data-stat]');
+        if (stat) {
+            attState.openCard = attState.openCard === stat.dataset.stat ? null : stat.dataset.stat;
+            renderAttendance();
+            return;
+        }
+        const go = t.closest('[data-go]');
+        if (go) return attGo(go.dataset.go === 'modules' ? { level: 'modules', mod: null, month: null } : { level: 'months', month: null });
+        const mod = t.closest('[data-mod]');
+        if (mod) return attGo({ level: 'months', mod: Number(mod.dataset.mod) });
+        const mon = t.closest('[data-month]');
+        if (mon) return attGo({ level: 'days', month: Number(mon.dataset.month), day: null });
+        const day = t.closest('[data-day]');
+        if (day) { attState.day = Number(day.dataset.day); renderAttendance(); }
+    });
+    ['att-year', 'att-sem'].forEach(id => document.getElementById(id).addEventListener('change', renderAttendance));
+
+    renderAttendance();
 
     // ============ BAHOLAR SAHIFASI (demo ma'lumot) ============
     // Baho turlari: pts — GPA (5 ballik shkala) uchun, done — "yakunlangan" hisoblanadimi
