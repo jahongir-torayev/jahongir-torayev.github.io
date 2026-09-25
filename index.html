@@ -1230,14 +1230,21 @@
         align-items: center;
         gap: 10px;
         padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
-        background: rgba(245, 245, 249, .88);
+        background: rgba(255, 255, 255, .96);
         -webkit-backdrop-filter: saturate(160%) blur(14px);
         backdrop-filter: saturate(160%) blur(14px);
-        border-bottom: 1px solid transparent;
-        transition: border-color .2s ease, background .2s ease;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 6px 20px -14px rgba(16, 16, 24, .28);
+        transition: box-shadow .2s ease;
     }
 
-    .topbar.scrolled { border-bottom-color: var(--line); background: rgba(255, 255, 255, .92); }
+    /* scroll bo'lganda soya kuchayadi */
+    .topbar.scrolled { box-shadow: 0 10px 26px -14px rgba(16, 16, 24, .38); }
+
+    /* navbar ichidagi tugmalar oq fon ustida ajralib turishi uchun */
+    .topbar .tb-btn { background: var(--bg); border-color: transparent; }
+    .topbar .tb-btn[aria-expanded="true"] { background: var(--ink); }
 
     .tb-avatar {
         appearance: none;
@@ -1655,6 +1662,94 @@
         letter-spacing: 0;
     }
 
+    /* ---- Custom select (native <select> yashirin qoladi, qiymat unda saqlanadi) ---- */
+    .cs { position: relative; }
+
+    .cs-native {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .cs-btn {
+        appearance: none;
+        width: 100%;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px 0 14px;
+        border-radius: var(--r-md);
+        border: 1px solid var(--line);
+        background: var(--surface);
+        font-family: 'Inter', sans-serif;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--ink);
+        text-align: left;
+        text-transform: none;
+        letter-spacing: 0;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(16, 16, 24, .04);
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .cs-btn .cs-val { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cs-btn svg { color: var(--muted); flex: none; transition: transform .2s ease; }
+    .cs.open .cs-btn { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .cs.open .cs-btn svg { transform: rotate(180deg); color: var(--accent); }
+
+    .cs-list {
+        position: absolute;
+        z-index: 30;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 6px;
+        list-style: none;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 18px 40px -16px rgba(16, 16, 24, .3);
+        opacity: 0;
+        transform: translateY(-6px);
+        pointer-events: none;
+        visibility: hidden;
+        transition: opacity .15s ease, transform .15s ease, visibility 0s linear .15s;
+    }
+
+    .cs.open .cs-list {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+        visibility: visible;
+        transition: opacity .15s ease, transform .15s ease;
+    }
+
+    .cs-opt {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 0 10px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        text-transform: none;
+        letter-spacing: 0;
+        cursor: pointer;
+    }
+
+    .cs-opt span { flex: 1; }
+    .cs-opt svg { color: var(--success); opacity: 0; }
+    .cs-opt:hover, .cs-opt.focus { background: var(--bg); }
+    .cs-opt[aria-selected="true"] { background: var(--accent-soft); color: var(--success); font-weight: 700; }
+    .cs-opt[aria-selected="true"] svg { opacity: 1; }
+
     .gr-summary { padding: 18px; }
 
     .gr-top { display: flex; align-items: center; gap: 16px; }
@@ -1929,8 +2024,26 @@
         border-radius: var(--r-lg);
     }
 
+    /* brauzerning bosilganda chiqadigan standart ko'k/kulrang "tap highlight"ini o'chiramiz,
+       o'rniga o'zimizning yengil bosilish effektimiz */
+    * { -webkit-tap-highlight-color: transparent; }
+    .month-cell { transition: transform .12s ease, background .15s ease; }
+    .month-cell:not(.empty):active { transform: scale(.92); }
+
     /* mobil holat — base qoidalardan keyin turishi shart */
     @media (max-width: 768px) {
+        /* ilovadek ishlashi uchun: matnni belgilash / nusxalash va uzoq bosish menyusi o'chiriladi */
+        body {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+        input, textarea, [contenteditable="true"] {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        img { -webkit-user-drag: none; }
+
         .topbar { display: flex; }
         .l-meta { display: block; }
         /* uzun dars nomlari (nowrap) grid ustunini kengaytirib yubormasligi uchun */
@@ -2232,12 +2345,14 @@
     <!-- ================= BAHOLAR (mobil sahifa) ================= -->
     <div class="app-page" id="page-grades">
         <div class="gr-period">
-            <label class="gr-select">O'quv yili
-                <select id="gr-year"><option>2025-26</option><option>2024-25</option></select>
-            </label>
-            <label class="gr-select">Semestr
-                <select id="gr-sem"><option>Semester 2</option><option>Semester 1</option></select>
-            </label>
+            <div class="gr-select">
+                <span class="gr-select-l" id="gr-year-l">O'quv yili</span>
+                <select id="gr-year" aria-labelledby="gr-year-l"><option>2025-26</option><option>2024-25</option></select>
+            </div>
+            <div class="gr-select">
+                <span class="gr-select-l" id="gr-sem-l">Semestr</span>
+                <select id="gr-sem" aria-labelledby="gr-sem-l"><option>Semester 2</option><option>Semester 1</option></select>
+            </div>
         </div>
 
         <div class="card gr-summary">
@@ -3141,6 +3256,129 @@
     document.getElementById('logout-confirm').addEventListener('click', () => {
         // token/sessiyani tozalash shu yerda (masalan, refresh tokenni bekor qilish so'rovi)
         window.location.href = LOGOUT_URL;
+    });
+
+    // ================================================================
+    // ===================== CUSTOM SELECT ============================
+    // ================================================================
+    // Har bir .gr-select ichidagi <select> yashiriladi, o'rniga ilova uslubidagi
+    // tugma + ro'yxat chiziladi. Qiymat baribir native select'da turadi va
+    // o'zgarganda 'change' hodisasi yuboriladi — backend logikasi o'zgarmaydi.
+    const checkSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const chevSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const customSelects = [];
+
+    function closeAllSelects(except) {
+        customSelects.forEach(c => { if (c !== except) c.close(); });
+    }
+
+    document.querySelectorAll('.gr-select select').forEach(sel => {
+        const wrap = document.createElement('div');
+        wrap.className = 'cs';
+        sel.parentNode.insertBefore(wrap, sel);
+        wrap.appendChild(sel);
+        sel.classList.add('cs-native');
+        sel.tabIndex = -1;
+
+        const listId = sel.id + '-list';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cs-btn';
+        btn.setAttribute('aria-haspopup', 'listbox');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.setAttribute('aria-controls', listId);
+        const labelId = sel.getAttribute('aria-labelledby');
+        if (labelId) btn.setAttribute('aria-labelledby', labelId + ' ' + sel.id + '-val');
+        btn.innerHTML = `<span class="cs-val" id="${sel.id}-val"></span>${chevSvg}`;
+
+        const list = document.createElement('ul');
+        list.className = 'cs-list';
+        list.id = listId;
+        list.setAttribute('role', 'listbox');
+        list.tabIndex = -1;
+
+        wrap.appendChild(btn);
+        wrap.appendChild(list);
+
+        let focusIdx = 0;
+        const opts = () => [...list.children];
+
+        function renderOptions() {
+            list.innerHTML = [...sel.options].map((o, i) =>
+                `<li class="cs-opt" role="option" data-i="${i}" aria-selected="${i === sel.selectedIndex}"><span>${o.text}</span>${checkSvg}</li>`
+            ).join('');
+            btn.querySelector('.cs-val').textContent = sel.options[sel.selectedIndex]?.text || '';
+        }
+
+        function setFocus(i) {
+            focusIdx = (i + opts().length) % opts().length;
+            opts().forEach((o, j) => o.classList.toggle('focus', j === focusIdx));
+        }
+
+        function choose(i) {
+            if (i !== sel.selectedIndex) {
+                sel.selectedIndex = i;
+                sel.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+            renderOptions();
+            api.close();
+            btn.focus({ preventScroll: true });
+        }
+
+        const api = {
+            open() {
+                closeAllSelects(api);
+                wrap.classList.add('open');
+                btn.setAttribute('aria-expanded', 'true');
+                setFocus(sel.selectedIndex);
+            },
+            close() {
+                wrap.classList.remove('open');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        };
+        customSelects.push(api);
+
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            wrap.classList.contains('open') ? api.close() : api.open();
+        });
+        list.addEventListener('click', e => {
+            const li = e.target.closest('.cs-opt');
+            if (li) choose(Number(li.dataset.i));
+        });
+        btn.addEventListener('keydown', e => {
+            const open = wrap.classList.contains('open');
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (!open) return api.open();
+                setFocus(focusIdx + (e.key === 'ArrowDown' ? 1 : -1));
+            } else if ((e.key === 'Enter' || e.key === ' ') && open) {
+                e.preventDefault();
+                choose(focusIdx);
+            } else if (e.key === 'Escape' && open) {
+                e.stopPropagation();
+                api.close();
+            }
+        });
+
+        renderOptions();
+    });
+
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.cs')) closeAllSelects();
+    });
+
+    // ================================================================
+    // ========== MOBIL: nusxa olish va uzoq bosish menyusini cheklash ==========
+    // ================================================================
+    const isMobileView = window.matchMedia('(max-width: 768px)');
+    ['copy', 'cut', 'contextmenu'].forEach(evt => {
+        document.addEventListener(evt, e => {
+            if (!isMobileView.matches) return;
+            if (e.target.closest && e.target.closest('input, textarea, [contenteditable="true"]')) return;
+            e.preventDefault();
+        });
     });
 
     showPage('page-dashboard');
