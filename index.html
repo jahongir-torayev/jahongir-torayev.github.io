@@ -877,7 +877,41 @@
 
         #profile-card { height: auto !important; }
         #bugungi-card { height: auto !important; }
-        #lesson-list { max-height: 420px; }
+
+        /* Mobil: ism-familiya navbar'dagi profil menyusiga, bildirishnomalar esa
+           navbar'dagi qo'ng'iroqqa ko'chdi — shu sabab bu cardlar yashiriladi */
+        #profile-card,
+        #notif-card { display: none; }
+
+        /* Mobil: darslar ichki scroll'siz, ixcham qatorlar ko'rinishida */
+        #lesson-list { overflow: visible; max-height: none; }
+        .lesson-item { padding: 12px 14px; border-radius: 14px; }
+        .lesson-item + .lesson-item { margin-top: 8px; }
+        .lesson-item.pinned { position: static; box-shadow: none; }
+        .lesson-item.finished { opacity: .55; }
+        .l-head { margin-bottom: 0; align-items: center; gap: 12px; }
+        .subj-ic { width: 36px; height: 36px; border-radius: 10px; }
+        .subj-ic svg { width: 18px; height: 18px; }
+        .l-kind { display: none; }
+        .l-title {
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dates-row { display: none; }
+        .progress-block { display: none; }
+
+        /* hozirgi dars — minimal: bitta qator + ingichka progress chizig'i */
+        .lesson-item.ongoing {
+            background: var(--accent-soft);
+            box-shadow: inset 0 0 0 1px rgba(69, 179, 107, .35);
+        }
+        .lesson-item.ongoing .subj-ic { background: var(--surface); color: var(--accent); }
+        .lesson-item.ongoing .progress-block { display: flex; margin-top: 10px; }
+        .lesson-item.ongoing .progress-label-row { display: none; }
+        .lesson-item.ongoing .progress-track { height: 4px; background: rgba(255, 255, 255, .8); }
+        .lesson-item.ongoing .status-badge.ongoing { background: var(--accent); color: #fff; }
 
         .mobile-page-head {
             display: flex;
@@ -900,19 +934,26 @@
             margin-top: 2px;
         }
 
+        /* ---- Bottom nav: suzuvchi (floating) panel ---- */
+        .page { padding-bottom: calc(118px + env(safe-area-inset-bottom, 0px)); }
+
         .bottom-nav {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr 1fr 72px 1fr 1fr;
+            align-items: center;
             position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            left: 12px;
+            right: 12px;
+            bottom: calc(12px + env(safe-area-inset-bottom, 0px));
             z-index: 60;
-            background: var(--surface);
-            border-top: 1px solid var(--line);
-            padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px));
-            box-shadow: 0 -8px 24px -16px rgba(16, 16, 24, .25);
+            height: 68px;
+            padding: 0 6px;
+            background: rgba(255, 255, 255, .94);
+            -webkit-backdrop-filter: saturate(160%) blur(16px);
+            backdrop-filter: saturate(160%) blur(16px);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: 0 18px 40px -18px rgba(16, 16, 24, .35), 0 2px 6px rgba(16, 16, 24, .04);
         }
 
         .bn-item {
@@ -922,49 +963,64 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
-            gap: 3px;
-            flex: 1 1 0;
+            justify-content: center;
+            gap: 4px;
             min-width: 0;
-            padding: 6px 2px 4px;
+            height: 100%;
+            padding: 0;
             font-family: 'Inter', sans-serif;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 600;
             color: var(--muted);
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .bn-item svg { width: 22px; height: 22px; transition: transform .15s ease; }
-        .bn-item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 62px; }
-        .bn-item.active { color: var(--accent); }
-        .bn-item.active svg { transform: translateY(-1px); }
-        .bn-item:active svg { transform: scale(.9); }
-
-        .bn-scan {
-            flex: 0 0 auto;
-            position: relative;
-            width: 58px;
+        .bn-ic {
+            width: 48px;
+            height: 30px;
+            border-radius: var(--r-pill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s ease, transform .15s ease;
         }
 
-        .bn-scan-circle {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(160deg, #56c67e, var(--accent));
+        .bn-item svg { width: 22px; height: 22px; }
+        .bn-item .bn-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 64px; }
+        .bn-item.active { color: var(--ink); }
+        .bn-item.active .bn-ic { background: var(--accent-soft); color: var(--success); }
+        .bn-item:active .bn-ic { transform: scale(.9); }
+
+        /* skaner: panel ustidan ko'tarilgan to'q "squircle" tugma */
+        .bn-scan { justify-content: flex-start; }
+
+        .bn-scan-btn {
+            width: 58px;
+            height: 58px;
+            margin-top: -26px;
+            border-radius: 20px;
+            background: var(--accent);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 22px -8px rgba(69, 179, 107, .6);
-            margin-top: -26px;
-            border: 4px solid var(--surface);
+            position: relative;
+            box-shadow: 0 0 0 5px var(--bg), 0 14px 26px -10px rgba(69, 179, 107, .75);
             transition: transform .15s ease;
         }
 
-        .bn-scan-circle svg { width: 24px; height: 24px; }
-        .bn-scan:active .bn-scan-circle { transform: scale(.92); }
-        .bn-scan span { color: var(--ink-soft); margin-top: 2px; }
+        .bn-scan-btn::after {
+            content: '';
+            position: absolute;
+            inset: 6px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, .28);
+        }
+
+        .bn-scan-btn svg { width: 26px; height: 26px; }
+        .bn-scan:active .bn-scan-btn { transform: scale(.92); }
+        .bn-scan .bn-label { color: var(--ink); margin-top: 5px; }
     }
 
     /* ================= QR SCANNER ================= */
@@ -1153,9 +1209,845 @@
     .qr-error svg { width: 40px; height: 40px; color: var(--danger); }
     .qr-error p { margin: 0; font-size: 13.5px; color: rgba(255,255,255,.75); max-width: 280px; }
 
+    /* dars kartasidagi ixcham "vaqt · xona" qatori — faqat mobilda ko'rinadi */
+    .l-meta {
+        display: none;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11.5px;
+        color: var(--muted);
+        margin-top: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* ================= TOP NAVBAR (faqat mobil) ================= */
+    .topbar {
+        display: none;
+        position: sticky;
+        top: 0;
+        z-index: 70;
+        align-items: center;
+        gap: 10px;
+        padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 10px;
+        background: rgba(245, 245, 249, .88);
+        -webkit-backdrop-filter: saturate(160%) blur(14px);
+        backdrop-filter: saturate(160%) blur(14px);
+        border-bottom: 1px solid transparent;
+        transition: border-color .2s ease, background .2s ease;
+    }
+
+    .topbar.scrolled { border-bottom-color: var(--line); background: rgba(255, 255, 255, .92); }
+
+    .tb-avatar {
+        appearance: none;
+        border: none;
+        padding: 0;
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--accent-soft);
+        flex: none;
+        cursor: pointer;
+        box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--line);
+    }
+
+    .tb-avatar[aria-expanded="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent); }
+    .tb-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .tb-title { min-width: 0; flex: 1; }
+
+    .tb-h {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 17px;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .tb-sub {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .tb-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+
+    .tb-btn {
+        appearance: none;
+        position: relative;
+        height: 42px;
+        min-width: 42px;
+        padding: 0;
+        border-radius: 13px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+        transition: background .15s ease, transform .1s ease;
+    }
+
+    .tb-btn:active { transform: scale(.94); }
+    .tb-btn[aria-expanded="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .tb-btn svg { width: 20px; height: 20px; }
+
+    .tb-lang { padding: 0 9px; font-size: 12.5px; font-weight: 700; letter-spacing: .02em; }
+    .tb-lang svg { width: 14px; height: 14px; opacity: .6; }
+
+    .tb-logout { color: var(--danger); }
+    .tb-logout[aria-expanded="true"] { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+    .tb-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        min-width: 8px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: var(--r-pill);
+        background: var(--danger);
+        color: #fff;
+        font-size: 10.5px;
+        font-weight: 700;
+        line-height: 18px;
+        text-align: center;
+        border: 2px solid var(--bg);
+    }
+
+    .tb-badge[hidden] { display: none; }
+
+    /* navbar popover / panellari */
+    .tb-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 68;
+        background: rgba(16, 16, 24, .28);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s ease;
+    }
+
+    .tb-backdrop.show { opacity: 1; pointer-events: auto; }
+
+    .tb-pop {
+        position: fixed;
+        z-index: 72;
+        top: calc(70px + env(safe-area-inset-top, 0px));
+        left: 12px;
+        right: 12px;
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: 0 24px 60px -20px rgba(16, 16, 24, .35);
+        padding: 16px;
+        opacity: 0;
+        transform: translateY(-8px) scale(.98);
+        transform-origin: top right;
+        pointer-events: none;
+        visibility: hidden;
+        transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+    }
+
+    .tb-pop.open {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+        visibility: visible;
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .tb-pop.narrow { left: auto; width: 210px; padding: 6px; }
+
+    .pop-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .pop-head h3 {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .pop-link-btn {
+        appearance: none;
+        border: none;
+        background: none;
+        color: var(--success);
+        font-family: inherit;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 8px 0;
+    }
+
+    /* profil panel */
+    .pp-top { display: flex; align-items: center; gap: 14px; }
+
+    .pp-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        overflow: hidden;
+        flex: none;
+        background: var(--accent-soft);
+    }
+
+    .pp-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .pp-name {
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .pp-role { font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+    .pp-rows {
+        margin-top: 14px;
+        background: var(--bg);
+        border-radius: var(--r-md);
+        padding: 2px 12px;
+    }
+
+    .pp-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 11px 0;
+        font-size: 13.5px;
+        color: var(--ink-soft);
+        font-weight: 500;
+    }
+
+    .pp-row + .pp-row { border-top: 1px solid var(--line); }
+    .pp-row svg { color: var(--muted); flex: none; }
+    .pp-row .k { flex: 1; }
+    .pp-row .v { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--ink); }
+
+    .pp-groups-title {
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        margin-top: 14px;
+    }
+
+    .pp-groups { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+    .pp-group {
+        font-size: 12px;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: var(--r-pill);
+        background: var(--bg);
+        color: var(--ink-soft);
+    }
+
+    .pp-group.active { background: var(--accent-soft); color: var(--success); }
+
+    .pp-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        margin-top: 16px;
+        border-radius: var(--r-md);
+        background: var(--ink);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 13.5px;
+    }
+
+    /* guruh qatori: faqat birinchi guruh, bosilganda qolganlari ochiladi */
+    .pp-group-row {
+        margin-top: 8px;
+        background: var(--bg);
+        border-radius: var(--r-md);
+        padding: 0 12px;
+    }
+
+    .pp-group-toggle {
+        appearance: none;
+        width: 100%;
+        border: none;
+        background: none;
+        font-family: inherit;
+        text-align: left;
+        cursor: pointer;
+        min-height: 44px;
+    }
+
+    .pp-group-toggle:disabled { cursor: default; }
+
+    .pp-more {
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: var(--r-pill);
+        background: var(--accent-soft);
+        color: var(--success);
+    }
+
+    .pp-chev { color: var(--muted); transition: transform .2s ease; }
+    .pp-group-toggle[aria-expanded="true"] .pp-chev { transform: rotate(180deg); }
+
+    .pp-group-more { border-top: 1px solid var(--line); padding: 4px 0 8px 26px; }
+    .pp-group-more[hidden] { display: none; }
+
+    .pp-group-item {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12.5px;
+        color: var(--ink-soft);
+        padding: 7px 0;
+    }
+
+    /* chiqish — ko'zga tashlanmaydigan joyda: profil panelining eng pastida */
+    .pp-logout {
+        appearance: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 44px;
+        margin-top: 14px;
+        border: none;
+        border-top: 1px solid var(--line);
+        border-radius: 0;
+        background: none;
+        padding-top: 12px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+    }
+
+    .pp-logout:hover { color: var(--danger); }
+
+    /* til tanlash */
+    .lang-opt {
+        appearance: none;
+        width: 100%;
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 10px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        text-align: left;
+    }
+
+    .lang-opt:hover { background: var(--bg); }
+    .lang-opt .code { width: 26px; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: .03em; }
+    .lang-opt .name { flex: 1; }
+    .lang-opt .tick { color: var(--success); opacity: 0; display: flex; }
+    .lang-opt[aria-checked="true"] { background: var(--accent-soft); font-weight: 700; }
+    .lang-opt[aria-checked="true"] .tick { opacity: 1; }
+
+    /* bildirishnomalar panelida o'qilmagan belgisi */
+    #pop-notif .notif-item { position: relative; }
+    #pop-notif .notif-item.unread::after {
+        content: '';
+        position: absolute;
+        top: 14px;
+        right: 10px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+    }
+    #pop-notif .notif-item.unread .notif-time { margin-right: 12px; }
+
+    /* chiqish tasdig'i */
+    .lo-ic {
+        width: 48px;
+        height: 48px;
+        border-radius: 16px;
+        background: var(--danger-soft);
+        color: var(--danger);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 4px auto 12px;
+    }
+
+    .lo-title { text-align: center; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 17px; }
+    .lo-text { text-align: center; font-size: 13px; color: var(--ink-soft); margin: 6px 0 16px; }
+    .lo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .lo-btn {
+        appearance: none;
+        min-height: 46px;
+        border-radius: var(--r-md);
+        border: 1px solid var(--line);
+        background: var(--surface);
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--ink);
+        cursor: pointer;
+    }
+
+    .lo-btn.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+    /* ================= BAHOLAR SAHIFASI ================= */
+    .gr-period {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 14px;
+    }
+
+    .gr-select {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .gr-select select {
+        appearance: none;
+        -webkit-appearance: none;
+        height: 44px;
+        border-radius: var(--r-md);
+        border: 1px solid var(--line);
+        background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%239797A3' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;
+        padding: 0 34px 0 12px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: var(--ink);
+        text-transform: none;
+        letter-spacing: 0;
+    }
+
+    .gr-summary { padding: 18px; }
+
+    .gr-top { display: flex; align-items: center; gap: 16px; }
+
+    .gr-gauge { position: relative; width: 132px; height: 76px; flex: none; }
+    .gr-gauge svg { display: block; }
+
+    .gr-gauge-val {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        line-height: 1;
+    }
+
+    .gr-gauge-val b { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 27px; letter-spacing: -.02em; }
+    .gr-gauge-val span { font-size: 10.5px; color: var(--muted); font-weight: 600; margin-top: 4px; }
+
+    .gr-done { min-width: 0; flex: 1; }
+    .gr-done .l { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+    .gr-done .v { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 28px; color: var(--success); line-height: 1.15; margin-top: 2px; }
+    .gr-done .s { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    .gr-bar { display: flex; gap: 3px; height: 8px; margin: 16px 0 4px; }
+
+    /* statistika (countlar) — accordion */
+    .gr-stats-toggle {
+        appearance: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+        min-height: 36px;
+        margin-bottom: -6px;
+        border: none;
+        background: none;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .gr-stats-toggle svg { transition: transform .2s ease; }
+    .gr-stats-toggle[aria-expanded="true"] { color: var(--ink-soft); }
+    .gr-stats-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+    .gr-legend[hidden] { display: none; }
+    .gr-legend:not([hidden]) { margin-top: 10px; animation: grFade .2s ease; }
+    @keyframes grFade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+    .gr-bar span { border-radius: var(--r-pill); min-width: 6px; }
+
+    .gr-legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+
+    .gr-leg { background: var(--bg); border-radius: 10px; padding: 8px 10px; min-width: 0; }
+    .gr-leg .top { display: flex; align-items: center; gap: 6px; }
+    .gr-leg .dot-c { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+    .gr-leg b { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 16px; }
+    .gr-leg .nm { font-size: 10.5px; color: var(--ink-soft); font-weight: 600; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gr-leg.zero { opacity: .5; }
+
+    /* --- Filter: bitta qator, gorizontal scroll + ko'rinadigan scroll indikatori --- */
+    .gr-filter-wrap {
+        position: relative;
+        margin: 16px -14px 14px;
+    }
+
+    .gr-filters {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 2px 14px 2px;
+        scroll-behavior: smooth;
+        scroll-padding-inline: 14px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;          /* native scrollbar o'rniga pastdagi custom indikator */
+        overscroll-behavior-x: contain;
+    }
+
+    .gr-filters::-webkit-scrollbar { display: none; }
+
+    /* chap/o'ng chetdagi "davomi bor" soyasi */
+    .gr-filter-wrap::before,
+    .gr-filter-wrap::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        height: 44px;
+        width: 36px;
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity .2s ease;
+    }
+
+    .gr-filter-wrap::before { left: 0; background: linear-gradient(90deg, var(--bg), rgba(245, 245, 249, 0)); opacity: 0; }
+    .gr-filter-wrap::after { right: 0; background: linear-gradient(270deg, var(--bg), rgba(245, 245, 249, 0)); }
+    .gr-filter-wrap.not-start::before { opacity: 1; }
+    .gr-filter-wrap.at-end::after { opacity: 0; }
+
+    .gr-chip {
+        appearance: none;
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        height: 40px;
+        padding: 0 12px 0 13px;
+        border-radius: var(--r-pill);
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink);
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+
+    .gr-chip .dot-c { width: 7px; height: 7px; border-radius: 50%; }
+    .gr-chip .cnt {
+        font-size: 11px;
+        font-weight: 700;
+        min-width: 8px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        padding: 0 6px;
+        border-radius: var(--r-pill);
+        background: var(--bg);
+        color: var(--ink-soft);
+    }
+
+    .gr-chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .gr-chip[aria-pressed="true"] .cnt { background: rgba(255, 255, 255, .18); color: #fff; }
+
+    /* custom scroll indikatori — user filterni surish mumkinligini ko'radi */
+    .gr-scroll {
+        position: relative;
+        height: 5px;
+        margin: 10px 14px 0;
+        border-radius: var(--r-pill);
+        background: var(--neutral-soft);
+        cursor: pointer;
+        touch-action: none;
+    }
+
+    /* barmoq bilan ushlash oson bo'lishi uchun ko'rinmas kattaroq zona */
+    .gr-scroll::before { content: ''; position: absolute; left: 0; right: 0; top: -10px; bottom: -10px; }
+    .gr-scroll[hidden] { display: none; }
+
+    .gr-scroll-thumb {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 40%;
+        border-radius: var(--r-pill);
+        background: var(--accent);
+        cursor: grab;
+    }
+
+    .gr-scroll.dragging .gr-scroll-thumb { cursor: grabbing; background: var(--success); }
+
+    /* --- Fan kartalari (accordion) --- */
+    .gr-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .gr-card + .gr-card { margin-top: 10px; }
+
+    .gr-head {
+        appearance: none;
+        width: 100%;
+        border: none;
+        background: none;
+        padding: 14px 14px 13px;
+        text-align: left;
+        font-family: inherit;
+        color: inherit;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .gr-head-row { display: flex; align-items: center; gap: 12px; width: 100%; }
+    .gr-head-row .subj-ic { width: 38px; height: 38px; border-radius: 11px; }
+    .gr-head-row .subj-ic svg { width: 18px; height: 18px; }
+    .gr-name { min-width: 0; flex: 1; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14.5px; line-height: 1.3; }
+
+    .gr-track-row { display: flex; align-items: center; gap: 10px; width: 100%; }
+    .gr-segs { display: flex; gap: 4px; flex: 1; }
+    .gr-seg { flex: 1; height: 5px; border-radius: var(--r-pill); background: var(--neutral-soft); }
+    .gr-final { font-size: 11.5px; color: var(--ink-soft); font-weight: 500; white-space: nowrap; }
+    .gr-chev { color: var(--muted); flex: none; transition: transform .2s ease; }
+    .gr-card.open .gr-chev { transform: rotate(180deg); }
+
+    .gr-steps { display: none; padding: 0 10px 10px; }
+    .gr-card.open .gr-steps { display: block; }
+
+    .gr-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 10px;
+        border-radius: 12px;
+        background: var(--bg);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: .04em;
+        color: var(--ink-soft);
+    }
+
+    .gr-step + .gr-step { margin-top: 6px; }
+    .gr-step.is-final { background: var(--warn-soft); color: var(--ink); }
+    .gr-step .num {
+        width: 22px;
+        height: 22px;
+        border-radius: 7px;
+        background: var(--surface);
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+    }
+    .gr-step .lbl { flex: 1; }
+    .gr-step .fin { font-size: 10px; color: var(--warn); letter-spacing: .06em; }
+
+    /* baho pill'lari */
+    .g-pill {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 10px;
+        border-radius: var(--r-pill);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0;
+        white-space: nowrap;
+        flex: none;
+        border: 1px solid transparent;
+    }
+
+    .g-dist  { background: var(--success-soft); color: var(--success); border-color: rgba(15, 138, 95, .35); }
+    .g-merit { background: #EEF7DC; color: #4D7C0F; border-color: rgba(101, 163, 13, .4); }
+    .g-pass  { background: var(--warn-soft); color: var(--warn); border-color: rgba(180, 116, 10, .35); }
+    .g-uncl  { background: var(--danger-soft); color: var(--danger); border-color: rgba(209, 56, 44, .35); }
+    .g-ns    { background: var(--neutral-soft); color: var(--neutral); }
+    .g-wait  { background: var(--info-soft); color: var(--info); }
+    .g-empty { background: transparent; color: var(--muted); border: 1px dashed #CFCFDA; }
+
+    .gr-empty-state {
+        text-align: center;
+        color: var(--muted);
+        font-size: 13.5px;
+        padding: 32px 16px;
+        background: var(--surface);
+        border: 1px dashed var(--line);
+        border-radius: var(--r-lg);
+    }
+
+    /* mobil holat — base qoidalardan keyin turishi shart */
+    @media (max-width: 768px) {
+        .topbar { display: flex; }
+        .l-meta { display: block; }
+        /* uzun dars nomlari (nowrap) grid ustunini kengaytirib yubormasligi uchun */
+        .dash-grid { grid-template-columns: minmax(0, 1fr); }
+        .dash-grid > * { min-width: 0; }
+        .page { padding-top: 6px; }
+    }
+
 </style>
 </head>
 <body>
+
+<!-- ================= TOP NAVBAR (mobil) ================= -->
+<header class="topbar" id="topbar">
+    <button class="tb-avatar" type="button" data-pop="pop-profile" aria-label="Profil" aria-haspopup="dialog" aria-expanded="false">
+        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="">
+    </button>
+    <div class="tb-title">
+        <div class="tb-h" id="tb-title">Talaba paneli</div>
+        <div class="tb-sub" id="tb-sub"></div>
+    </div>
+    <div class="tb-actions">
+        <button class="tb-btn tb-lang" type="button" data-pop="pop-lang" aria-label="Tilni o'zgartirish" aria-haspopup="menu" aria-expanded="false">
+            <span id="tb-lang-label">UZ</span>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="tb-btn" type="button" data-pop="pop-notif" aria-label="Bildirishnomalar" aria-haspopup="dialog" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 8a6 6 0 1112 0c0 7 3 9 3 9H3s3-2 3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.3 21a1.94 1.94 0 003.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span class="tb-badge" id="tb-notif-badge">3</span>
+        </button>
+    </div>
+</header>
+
+<div class="tb-backdrop" id="tb-backdrop"></div>
+
+<!-- Profil paneli -->
+<div class="tb-pop" id="pop-profile" role="dialog" aria-label="Profil">
+    <div class="pp-top">
+        <div class="pp-avatar"><img src="https://randomuser.me/api/portraits/women/68.jpg" alt=""></div>
+        <div>
+            <div class="pp-name">Nodira Ahmedova</div>
+            <div class="pp-role">Talaba</div>
+        </div>
+    </div>
+    <div class="pp-rows">
+        <div class="pp-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 9h6M7 13h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span class="k">Talaba ID</span><span class="v">ST-10482</span>
+        </div>
+        <div class="pp-row">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4.5 4h3.2l1.3 4.5-2 1.5a11 11 0 005 5l1.5-2 4.5 1.3v3.2c0 1-.8 1.8-1.8 1.7A16 16 0 013 5.8C2.9 4.8 3.6 4 4.5 4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            <span class="k">Telefon</span><span class="v">+998 90 123 45 67</span>
+        </div>
+    </div>
+    <div class="pp-group-row">
+        <button class="pp-row pp-group-toggle" type="button" id="pp-group-toggle" aria-expanded="false" aria-controls="pp-group-more">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M10 10a4 4 0 100-8 4 4 0 000 8zM23 20v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="k">Guruh</span>
+            <span class="v" id="pp-group-main"></span>
+            <span class="pp-more" id="pp-group-count"></span>
+            <svg class="pp-chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="pp-group-more" id="pp-group-more" hidden></div>
+    </div>
+    <button class="pp-logout" type="button" data-pop="pop-logout" aria-haspopup="dialog" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Tizimdan chiqish
+    </button>
+</div>
+
+<!-- Til tanlash -->
+<div class="tb-pop narrow" id="pop-lang" role="menu" aria-label="Til">
+    <button class="lang-opt" type="button" role="menuitemradio" data-lang="uz" aria-checked="true"><span class="code">UZ</span><span class="name">O'zbekcha</span><span class="tick"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <button class="lang-opt" type="button" role="menuitemradio" data-lang="ru" aria-checked="false"><span class="code">RU</span><span class="name">Русский</span><span class="tick"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <button class="lang-opt" type="button" role="menuitemradio" data-lang="en" aria-checked="false"><span class="code">EN</span><span class="name">English</span><span class="tick"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+
+<!-- Bildirishnomalar (dashboard'dagi card o'rniga) -->
+<div class="tb-pop" id="pop-notif" role="dialog" aria-label="Bildirishnomalar">
+    <div class="pop-head">
+        <h3>Bildirishnomalar</h3>
+        <button class="pop-link-btn" type="button" id="notif-read-all">Hammasi o'qildi</button>
+    </div>
+    <div class="notif-item n-danger unread">
+        <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L1.9 18a2 2 0 001.7 3h16.8a2 2 0 001.7-3L14.1 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
+        <div class="notif-body">
+            <div class="notif-top"><span class="notif-from">Deadline</span><span class="notif-time">1 soat oldin</span></div>
+            <div class="notif-msg">Assignment topshirish — 2 kun qoldi</div>
+        </div>
+    </div>
+    <div class="notif-item n-info unread">
+        <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 16V4M7 9l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="notif-body">
+            <div class="notif-top"><span class="notif-from">Aziz aka</span><span class="notif-time">3 soat oldin</span></div>
+            <div class="notif-msg">Ertangi darsga materiallar yuklandi</div>
+        </div>
+    </div>
+    <div class="notif-item n-muted unread">
+        <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4v6h6M20 20v-6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 10a8 8 0 00-14.6-4.6M4 14a8 8 0 0014.6 4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="notif-body">
+            <div class="notif-top"><span class="notif-from">Tizim</span><span class="notif-time">Kecha</span></div>
+            <div class="notif-msg">Jadvalingiz yangilandi</div>
+        </div>
+    </div>
+    <a class="see-all" href="#">Hammasini ko'rish →</a>
+</div>
+
+<!-- Chiqish tasdig'i -->
+<div class="tb-pop" id="pop-logout" role="alertdialog" aria-labelledby="lo-title" aria-describedby="lo-text">
+    <div class="lo-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="lo-title" id="lo-title">Tizimdan chiqasizmi?</div>
+    <div class="lo-text" id="lo-text">Qayta kirish uchun login va parolingiz kerak bo'ladi.</div>
+    <div class="lo-actions">
+        <button class="lo-btn" type="button" id="logout-cancel">Bekor qilish</button>
+        <button class="lo-btn danger" type="button" id="logout-confirm">Chiqish</button>
+    </div>
+</div>
 
 <div class="page">
 
@@ -1197,7 +2089,7 @@
             </div>
 
             <div class="card" id="bugungi-card">
-                <div class="card-title">Bugungi darslar</div>
+                <div class="card-title">Bugungi darslar<span class="hint" id="lesson-count"></span></div>
                 <div id="lesson-list"></div>
             </div>
 
@@ -1235,7 +2127,7 @@
                 </div>
             </div>
 
-            <div class="card">
+            <div class="card" id="notif-card">
                 <div class="card-title">Bildirishnomalar</div>
                 <div class="notif-item n-danger">
                     <div class="notif-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10.3 3.9L1.9 18a2 2 0 001.7 3h16.8a2 2 0 001.7-3L14.1 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></div>
@@ -1283,12 +2175,6 @@
 
     <!-- ================= DAVOMAT (mobil sahifa) ================= -->
     <div class="app-page" id="page-attendance">
-        <div class="mobile-page-head">
-            <div>
-                <h1>Davomat</h1>
-                <div class="sub">Sentabr 2026</div>
-            </div>
-        </div>
 
         <div class="card">
             <div class="card-title">Umumiy ko'rsatkich</div>
@@ -1331,20 +2217,6 @@
 
     <!-- ================= KALENDAR (mobil sahifa) ================= -->
     <div class="app-page" id="page-calendar">
-        <div class="mobile-page-head">
-            <div>
-                <h1>Kalendar</h1>
-                <div class="sub" id="cal-full-month-label">Sentabr 2026</div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="cal-head-row">
-                <div class="card-title" style="margin:0;">Hafta</div>
-                <span class="month" id="cal-month-label-2"></span>
-            </div>
-            <div class="cal-grid" id="cal-row-2"></div>
-        </div>
 
         <div class="card">
             <div class="card-title">Oy ko'rinishi</div>
@@ -1359,59 +2231,71 @@
 
     <!-- ================= BAHOLAR (mobil sahifa) ================= -->
     <div class="app-page" id="page-grades">
-        <div class="mobile-page-head">
-            <div>
-                <h1>Baholar</h1>
-                <div class="sub">Joriy semestr</div>
-            </div>
+        <div class="gr-period">
+            <label class="gr-select">O'quv yili
+                <select id="gr-year"><option>2025-26</option><option>2024-25</option></select>
+            </label>
+            <label class="gr-select">Semestr
+                <select id="gr-sem"><option>Semester 2</option><option>Semester 1</option></select>
+            </label>
         </div>
 
-        <div class="card">
-            <div class="card-title">O'rtacha ball<span class="hint">GPA</span></div>
-            <div class="stats-row" style="grid-template-columns:1fr;">
-                <div class="stat-box" style="height:auto;padding:14px 16px;">
-                    <div class="stat-head">
-                        <span class="l" style="max-width:none;">Barcha fanlar bo'yicha o'rtacha</span>
-                        <div class="ic" style="background:var(--accent-soft);color:var(--accent)">
-                            <svg viewBox="0 0 24 24" fill="none"><path d="M12 4L2 9l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 11.5V17c0 1.1 2.7 2.5 6 2.5s6-1.4 6-2.5v-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                        </div>
-                    </div>
-                    <div class="n">87 / 100</div>
+        <div class="card gr-summary">
+            <div class="gr-top">
+                <div class="gr-gauge">
+                    <svg width="132" height="76" viewBox="0 0 132 76" aria-hidden="true">
+                        <path d="M10 68 A56 56 0 0 1 122 68" fill="none" stroke="var(--neutral-soft)" stroke-width="10" stroke-linecap="round"/>
+                        <path id="gpa-arc" d="M10 68 A56 56 0 0 1 122 68" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 176"/>
+                    </svg>
+                    <div class="gr-gauge-val"><b id="gpa-val">—</b><span>/ 5.00 GPA</span></div>
+                </div>
+                <div class="gr-done">
+                    <div class="l">Yakunlangan fanlar</div>
+                    <div class="v" id="gr-done-pct">—</div>
+                    <div class="s" id="gr-done-sub"></div>
                 </div>
             </div>
+            <div class="gr-bar" id="gr-bar" aria-hidden="true"></div>
+            <button class="gr-stats-toggle" type="button" id="gr-stats-toggle" aria-expanded="false" aria-controls="gr-legend">
+                <span>Batafsil ko'rish</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="gr-legend" id="gr-legend" hidden></div>
         </div>
 
-        <div class="card">
-            <div class="card-title">Fanlar bo'yicha</div>
-            <div id="grades-list"></div>
+        <div class="gr-filter-wrap" id="gr-filter-wrap">
+            <div class="gr-filters" id="gr-filters" aria-label="Baho bo'yicha filter"></div>
+            <div class="gr-scroll" id="gr-scroll" aria-hidden="true">
+                <div class="gr-scroll-thumb" id="gr-scroll-thumb"></div>
+            </div>
         </div>
+
+        <div id="grades-list"></div>
     </div>
 
 </div>
 
 <!-- ================= BOTTOM NAV (mobil) ================= -->
-<nav class="bottom-nav" id="bottom-nav">
-    <button class="bn-item active" data-page="page-dashboard">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 11.5L12 4l8 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 10v9a1 1 0 001 1h3v-6h4v6h3a1 1 0 001-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Talaba paneli</span>
+<nav class="bottom-nav" id="bottom-nav" aria-label="Asosiy menyu">
+    <button class="bn-item active" type="button" data-page="page-dashboard">
+        <span class="bn-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="7" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="2" stroke="currentColor" stroke-width="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        <span class="bn-label">Asosiy</span>
     </button>
-    <button class="bn-item" data-page="page-attendance">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3.5" width="18" height="17" rx="3" stroke="currentColor" stroke-width="1.6"/></svg>
-        <span>Davomat</span>
+    <button class="bn-item" type="button" data-page="page-attendance">
+        <span class="bn-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="9.5" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M3 20c0-3.6 2.9-6 6.5-6 1.4 0 2.7.4 3.7 1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M15 18l2.2 2.2L21.5 16" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="bn-label">Davomat</span>
     </button>
     <button class="bn-item bn-scan" id="qr-scan-btn" type="button" aria-label="QR skanerlash">
-        <span class="bn-scan-circle">
-            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.9"/><rect x="14" y="3" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.9"/><rect x="3" y="14" width="7" height="7" rx="1.3" stroke="currentColor" stroke-width="1.9"/><path d="M14 14h3v3M20 14v3.5M14 20h3.5M20 20v.01" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
-        <span>Skanerlash</span>
+        <span class="bn-scan-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 8V6a2.5 2.5 0 012.5-2.5h2M16 3.5h2A2.5 2.5 0 0120.5 6v2M20.5 16v2a2.5 2.5 0 01-2.5 2.5h-2M8 20.5H6A2.5 2.5 0 013.5 18v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+        <span class="bn-label">Skaner</span>
     </button>
-    <button class="bn-item" data-page="page-calendar">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M3 9.5h18M8 3v3M16 3v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
-        <span>Kalendar</span>
+    <button class="bn-item" type="button" data-page="page-calendar">
+        <span class="bn-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+        <span class="bn-label">Kalendar</span>
     </button>
-    <button class="bn-item" data-page="page-grades">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M6 3h9l4 4v14a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 12l2 2 4-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>Baholar</span>
+    <button class="bn-item" type="button" data-page="page-grades">
+        <span class="bn-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="5.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 6.8l.7 1.4 1.5.2-1.1 1 .3 1.5-1.4-.7-1.4.7.3-1.5-1.1-1 1.5-.2z" fill="currentColor"/><path d="M8.5 13.5L7 21l5-2.5 5 2.5-1.5-7.5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+        <span class="bn-label">Baholar</span>
     </button>
 </nav>
 
@@ -1466,15 +2350,13 @@
     const checkIcon = `<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
     // ============ DEMO LESSON DATA (virtual clock, minutes from 09:00) ============
+    // bir kunda eng ko'pi bilan 3 ta dars bo'ladi
     const lessons = [
-        { name: "Java Backend Development", mentor: "Aziz Rahimov", room: "204-xona", type: "offline", icon: "code", startMin: 0,   endMin: 40  },
-        { name: "Algoritmlar va Ma'lumotlar Tuzilmasi", mentor: "Bekzod Yusupov", room: "Zoom", type: "online", icon: "brain", startMin: 50,  endMin: 90  },
-        { name: "System Design Asoslari", mentor: "Kamola Tosheva", room: "301-xona", type: "offline", icon: "cap", startMin: 100, endMin: 140 },
-        { name: "Frontend Development Amaliyoti", mentor: "Malika Yorova", room: "210-xona", type: "offline", icon: "layout", startMin: 150, endMin: 190 },
-        { name: "Ma'lumotlar Bazasi Dizayni", mentor: "Sardor Qodirov", room: "Zoom", type: "online", icon: "db", startMin: 200, endMin: 240 },
-        { name: "DevOps va CI/CD Asoslari", mentor: "Javlon Nematov", room: "105-xona", type: "offline", icon: "server", startMin: 250, endMin: 290 }
+        { name: "Java Backend Development", mentor: "Aziz Rahimov", room: "204-xona", type: "offline", icon: "code", startMin: 0,   endMin: 80  },
+        { name: "Algoritmlar va Ma'lumotlar Tuzilmasi", mentor: "Bekzod Yusupov", room: "Zoom", type: "online", icon: "brain", startMin: 90,  endMin: 170 },
+        { name: "System Design Asoslari", mentor: "Kamola Tosheva", room: "301-xona", type: "offline", icon: "cap", startMin: 180, endMin: 260 }
     ];
-    const TOTAL_VIRTUAL_MIN = 290;
+    const TOTAL_VIRTUAL_MIN = 260;
     const CYCLE_MS = 180000; // butun kun 3 daqiqada aylanadi (demo, avval 30 soniya edi — juda tez edi)
     const cycleAnchor = Date.now();
 
@@ -1520,6 +2402,12 @@
             ...withStatus.filter(l => l.status === 'finished')
         ];
 
+        const countEl = document.getElementById('lesson-count');
+        if (countEl) {
+            const left = withStatus.filter(l => l.status !== 'finished').length;
+            countEl.textContent = left ? `${left} / ${lessons.length} qoldi` : `${lessons.length} ta · tugadi`;
+        }
+
         listEl.innerHTML = '';
         ordered.forEach((l, idx) => {
             const div = document.createElement('div');
@@ -1535,6 +2423,7 @@
                     <div class="l-title-wrap">
                         <div class="l-kind">${l.mentor}</div>
                         <div class="l-title">${l.name}</div>
+                        <div class="l-meta">${fmtMin(l.startMin)}–${fmtMin(l.endMin)} · ${l.room}${l.status === 'upcoming' && l.startMin - vm <= 8 ? ' · ' + l.stateText : ''}</div>
                     </div>
                     <div class="badge-col">
                         <span class="status-badge ${l.status}">${l.status === 'ongoing' ? 'Hozir' : l.status === 'finished' ? 'Tugadi' : 'Keyin'}</span>
@@ -1588,7 +2477,7 @@
     // ============ MINI CALENDAR ============
     const dayNames = ['dush','sesh','chor','pay','jum','shan','yak'];
     const monthNames = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
-    const lessonCounts = [4, 3, 4, 2, 3, 0, 0];
+    const lessonCounts = [3, 2, 3, 2, 3, 0, 0];
     const today = new Date();
     const todayIdx = (today.getDay() + 6) % 7;
     const monday = new Date(today.getTime() - todayIdx * 86400000);
@@ -1626,7 +2515,6 @@
     }
 
     buildWeekRow('cal-row');
-    buildWeekRow('cal-row-2');
 
     // ============ STATS SLIDERS (2 ta card, har biri mustaqil slide qiladi) ============
     function buildSlideBox(containerId, panes, intervalMs) {
@@ -1838,10 +2726,29 @@
     const navButtons = document.querySelectorAll('.bn-item[data-page]');
     const pages = document.querySelectorAll('.app-page');
 
+    // navbar sarlavhasi har sahifada o'zgaradi (sahifa ichidagi alohida h1 endi kerak emas)
+    const weekDaysFull = ['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+    const monthCap = m => monthNames[m].charAt(0).toUpperCase() + monthNames[m].slice(1);
+    const PAGE_META = {
+        'page-dashboard':  { title: 'Talaba paneli', sub: () => `${weekDaysFull[today.getDay()]}, ${today.getDate()}-${monthNames[today.getMonth()]}` },
+        'page-attendance': { title: 'Davomat',       sub: () => `${monthCap(today.getMonth())} ${today.getFullYear()}` },
+        'page-calendar':   { title: 'Kalendar',      sub: () => `${monthCap(today.getMonth())} ${today.getFullYear()}` },
+        'page-grades':     { title: 'Baholar',       sub: () => 'Joriy semestr' }
+    };
+
     function showPage(pageId) {
         pages.forEach(p => p.classList.toggle('active', p.id === pageId));
         navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+        const meta = PAGE_META[pageId];
+        if (meta) {
+            document.getElementById('tb-title').textContent = meta.title;
+            document.getElementById('tb-sub').textContent = meta.sub();
+        }
+        if (typeof closePop === 'function') closePop();
         window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+        if (pageId === 'page-grades' && typeof updateFilterScroll === 'function') {
+            requestAnimationFrame(updateFilterScroll); // sahifa ko'ringandan keyin o'lchaymiz
+        }
     }
 
     navButtons.forEach(btn => {
@@ -1876,42 +2783,216 @@
     }
 
     // ============ BAHOLAR SAHIFASI (demo ma'lumot) ============
+    // Baho turlari: pts — GPA (5 ballik shkala) uchun, done — "yakunlangan" hisoblanadimi
+    const GRADE = {
+        dist:  { label: 'Distinction',    cls: 'g-dist',  color: 'var(--success)', pts: 5, done: true },
+        merit: { label: 'Merit',          cls: 'g-merit', color: '#84CC16',        pts: 4, done: true },
+        pass:  { label: 'Pass',           cls: 'g-pass',  color: '#F2A516',        pts: 3, done: true },
+        uncl:  { label: 'Unclassified',   short: 'Uncl', cls: 'g-uncl', color: 'var(--danger)', pts: 2, done: true },
+        none:  { label: 'Baholanmagan',   cls: 'g-wait',  color: '#9797A3' },
+        nosub: { label: 'Topshirilmagan', cls: 'g-ns',    color: '#C4C4CE' },
+        ns:    { label: 'N/S',            cls: 'g-ns' },
+        wait:  { label: 'Kutilmoqda',     cls: 'g-wait' }
+    };
+    const STEP_LABELS = ['Submission', 'Resubmission', 'Retake', 'Remodule'];
+    const FILTER_KEYS = ['dist', 'merit', 'pass', 'uncl', 'none', 'nosub'];
+
+    // demo ma'lumot — backend'dan keladigan javob shu shaklda bo'lsa bas:
+    // status = fanning yakuniy holati, steps = 4 urinish (null = hali yo'q), final = yakuniy urinish indeksi
     const grades = [
-        { name: 'Java Backend Development', score: 92 },
-        { name: "Algoritmlar va Ma'lumotlar Tuzilmasi", score: 78 },
-        { name: 'System Design Asoslari', score: 85 },
-        { name: 'Frontend Development Amaliyoti', score: 95 },
-        { name: "Ma'lumotlar Bazasi Dizayni", score: 71 },
-        { name: 'DevOps va CI/CD Asoslari', score: 88 }
+        { name: 'Java Backend Development',             icon: 'code',   status: 'dist',  steps: ['dist', null, null, null],     final: 0 },
+        { name: "Algoritmlar va Ma'lumotlar Tuzilmasi", icon: 'brain',  status: 'merit', steps: ['pass', 'merit', null, null],  final: 1 },
+        { name: 'System Design Asoslari',               icon: 'cap',    status: 'pass',  steps: ['pass', 'ns', null, null],     final: 0 },
+        { name: 'Frontend Development Amaliyoti',       icon: 'layout', status: 'merit', steps: ['merit', 'ns', null, null],    final: 0 },
+        { name: "Ma'lumotlar Bazasi Dizayni",           icon: 'db',     status: 'uncl',  steps: ['uncl', 'uncl', 'ns', null],   final: 1 },
+        { name: 'DevOps va CI/CD Asoslari',             icon: 'server', status: 'none',  steps: ['wait', null, null, null],     final: -1 }
     ];
 
-    function gradeColor(score) {
-        if (score >= 85) return { fg: 'var(--success)', bg: 'var(--success-soft)', bar: 'var(--success)' };
-        if (score >= 65) return { fg: 'var(--warn)', bg: 'var(--warn-soft)', bar: 'var(--warn)' };
-        return { fg: 'var(--danger)', bg: 'var(--danger-soft)', bar: 'var(--danger)' };
+    let gradeFilter = 'all';
+    let openGrade = 0; // bir vaqtda bitta karta ochiq turadi
+
+    const pillHtml = key => key
+        ? `<span class="g-pill ${GRADE[key].cls}">${GRADE[key].short || GRADE[key].label}</span>`
+        : `<span class="g-pill g-empty">—</span>`;
+
+    function renderGradeSummary() {
+        const counts = Object.fromEntries(FILTER_KEYS.map(k => [k, 0]));
+        grades.forEach(g => counts[g.status]++);
+
+        const graded = grades.filter(g => GRADE[g.status].done);
+        const gpa = graded.length ? graded.reduce((s, g) => s + GRADE[g.status].pts, 0) / graded.length : 0;
+        document.getElementById('gpa-val').textContent = graded.length ? gpa.toFixed(2) : '—';
+        document.getElementById('gpa-arc').setAttribute('stroke-dasharray', `${(gpa / 5) * 175.9} 176`);
+
+        const pct = Math.round((graded.length / grades.length) * 100);
+        document.getElementById('gr-done-pct').textContent = `${pct}%`;
+        document.getElementById('gr-done-sub').textContent = `${grades.length} ta fandan ${graded.length} ta`;
+
+        document.getElementById('gr-bar').innerHTML = FILTER_KEYS
+            .filter(k => counts[k] > 0)
+            .map(k => `<span style="flex:${counts[k]};background:${GRADE[k].color}"></span>`).join('');
+
+        document.getElementById('gr-legend').innerHTML = FILTER_KEYS.map(k => `
+            <div class="gr-leg${counts[k] ? '' : ' zero'}">
+                <div class="top"><span class="dot-c" style="background:${GRADE[k].color}"></span><b>${counts[k]}</b></div>
+                <div class="nm">${GRADE[k].label}</div>
+            </div>`).join('');
+
+        return counts;
     }
 
-    const gradesListEl = document.getElementById('grades-list');
-    if (gradesListEl) {
-        gradesListEl.innerHTML = grades.map(g => {
-            const c = gradeColor(g.score);
+    function renderGradeFilters(counts) {
+        const chips = [{ k: 'all', label: 'Barchasi', n: grades.length }]
+            .concat(FILTER_KEYS.map(k => ({ k, label: GRADE[k].label, n: counts[k], color: GRADE[k].color })));
+        const wrap = document.getElementById('gr-filters');
+        wrap.innerHTML = chips.map(c => `
+            <button class="gr-chip" type="button" data-filter="${c.k}" aria-pressed="${c.k === gradeFilter}">
+                ${c.color ? `<span class="dot-c" style="background:${c.color}"></span>` : ''}
+                ${c.label}<span class="cnt">${c.n}</span>
+            </button>`).join('');
+    }
+
+    function renderGradeList() {
+        const listEl = document.getElementById('grades-list');
+        const items = grades
+            .map((g, i) => ({ ...g, i }))
+            .filter(g => gradeFilter === 'all' || g.status === gradeFilter);
+
+        if (!items.length) {
+            listEl.innerHTML = `<div class="gr-empty-state">Bu toifada fan yo'q</div>`;
+            return;
+        }
+
+        listEl.innerHTML = items.map(g => {
+            const open = g.i === openGrade;
+            const segs = g.steps.map(s => `<span class="gr-seg" style="${s && GRADE[s].color ? `background:${GRADE[s].color}` : ''}"></span>`).join('');
+            const steps = g.steps.map((s, si) => `
+                <div class="gr-step${si === g.final ? ' is-final' : ''}">
+                    <span class="num">${si + 1}</span>
+                    <span class="lbl">${STEP_LABELS[si].toUpperCase()}</span>
+                    ${si === g.final ? '<span class="fin">YAKUNIY</span>' : ''}
+                    ${pillHtml(s)}
+                </div>`).join('');
             return `
-                <div class="grade-item">
-                    <div class="grade-top">
-                        <span class="grade-name">${g.name}</span>
-                        <span class="grade-score"><b style="color:${c.fg}">${g.score}</b> / 100</span>
-                    </div>
-                    <div class="progress-track"><div class="progress-fill" style="width:${g.score}%;background:${c.bar}"></div></div>
-                </div>
-            `;
+                <div class="gr-card${open ? ' open' : ''}">
+                    <button class="gr-head" type="button" data-grade="${g.i}" aria-expanded="${open}">
+                        <div class="gr-head-row">
+                            <div class="subj-ic">${ICONS[g.icon]}</div>
+                            <div class="gr-name">${g.name}</div>
+                            ${pillHtml(g.status)}
+                        </div>
+                        <div class="gr-track-row">
+                            <div class="gr-segs">${segs}</div>
+                            <svg class="gr-chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </div>
+                    </button>
+                    <div class="gr-steps">${steps}</div>
+                </div>`;
         }).join('');
     }
+
+    renderGradeFilters(renderGradeSummary());
+
+    // statistika accordion: countlar faqat "Batafsil ko'rish" bosilganda ochiladi
+    const grStatsToggle = document.getElementById('gr-stats-toggle');
+    grStatsToggle.addEventListener('click', () => {
+        const open = grStatsToggle.getAttribute('aria-expanded') !== 'true';
+        grStatsToggle.setAttribute('aria-expanded', open);
+        grStatsToggle.querySelector('span').textContent = open ? 'Yopish' : "Batafsil ko'rish";
+        document.getElementById('gr-legend').hidden = !open;
+    });
+    renderGradeList();
+
+    document.getElementById('gr-filters').addEventListener('click', e => {
+        const chip = e.target.closest('.gr-chip');
+        if (!chip) return;
+        gradeFilter = chip.dataset.filter;
+        document.querySelectorAll('.gr-chip').forEach(c => c.setAttribute('aria-pressed', c === chip));
+        // tanlangan chip ko'rinadigan joyga suriladi
+        chip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        renderGradeList();
+    });
+
+    document.getElementById('grades-list').addEventListener('click', e => {
+        const head = e.target.closest('.gr-head');
+        if (!head) return;
+        const i = Number(head.dataset.grade);
+        openGrade = openGrade === i ? -1 : i;
+        renderGradeList();
+    });
+
+    // ---------- Filter: custom gorizontal scroll indikatori ----------
+    const grFilters = document.getElementById('gr-filters');
+    const grFilterWrap = document.getElementById('gr-filter-wrap');
+    const grScroll = document.getElementById('gr-scroll');
+    const grThumb = document.getElementById('gr-scroll-thumb');
+
+    function updateFilterScroll() {
+        const { scrollLeft, scrollWidth, clientWidth } = grFilters;
+        const max = scrollWidth - clientWidth;
+        const overflow = max > 1;
+        grScroll.hidden = !overflow;
+        grFilterWrap.classList.toggle('not-start', overflow && scrollLeft > 2);
+        grFilterWrap.classList.toggle('at-end', !overflow || scrollLeft >= max - 2);
+        if (!overflow) return;
+        const trackW = grScroll.clientWidth;
+        const thumbW = Math.max(36, trackW * (clientWidth / scrollWidth));
+        grThumb.style.width = thumbW + 'px';
+        grThumb.style.transform = `translateX(${(scrollLeft / max) * (trackW - thumbW)}px)`;
+    }
+
+    grFilters.addEventListener('scroll', updateFilterScroll, { passive: true });
+    window.addEventListener('resize', updateFilterScroll);
+
+    // sichqoncha g'ildiragi bilan ham (desktop/planshet) gorizontal suriladi
+    grFilters.addEventListener('wheel', e => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            grFilters.scrollLeft += e.deltaY;
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // indikatorni ushlab surish yoki trekka bosish
+    (function () {
+        let dragging = false, startX = 0, startScroll = 0;
+        const ratio = () => {
+            const trackW = grScroll.clientWidth, thumbW = grThumb.offsetWidth;
+            return (grFilters.scrollWidth - grFilters.clientWidth) / Math.max(1, trackW - thumbW);
+        };
+        grScroll.addEventListener('pointerdown', e => {
+            if (e.target !== grThumb) {
+                const rect = grScroll.getBoundingClientRect();
+                const pos = (e.clientX - rect.left - grThumb.offsetWidth / 2) * ratio();
+                grFilters.scrollTo({ left: pos, behavior: 'smooth' });
+                return;
+            }
+            dragging = true;
+            startX = e.clientX;
+            startScroll = grFilters.scrollLeft;
+            grFilters.style.scrollBehavior = 'auto';
+            grScroll.classList.add('dragging');
+            grScroll.setPointerCapture(e.pointerId);
+        });
+        grScroll.addEventListener('pointermove', e => {
+            if (!dragging) return;
+            grFilters.scrollLeft = startScroll + (e.clientX - startX) * ratio();
+        });
+        const stop = () => {
+            dragging = false;
+            grFilters.style.scrollBehavior = '';
+            grScroll.classList.remove('dragging');
+        };
+        grScroll.addEventListener('pointerup', stop);
+        grScroll.addEventListener('pointercancel', stop);
+    })();
+
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(updateFilterScroll);
 
     // ============ KALENDAR SAHIFASI: OYLIK KO'RINISH ============
     const monthLessonsMap = {
         // kun raqami -> shu kundagi darslar soni (demo)
-        1: 3, 2: 4, 3: 0, 4: 2, 5: 3, 8: 4, 9: 3, 10: 4, 11: 2, 12: 3,
-        15: 4, 16: 3, 17: 4, 18: 2, 19: 3, 22: 4, 23: 3, 24: 4, 25: 2, 26: 3
+        1: 3, 2: 2, 3: 0, 4: 2, 5: 3, 8: 3, 9: 3, 10: 2, 11: 2, 12: 3,
+        15: 3, 16: 3, 17: 2, 18: 2, 19: 3, 22: 3, 23: 2, 24: 3, 25: 3, 26: 2
     };
 
     function buildMonthGrid() {
@@ -1978,6 +3059,91 @@
     }
 
     buildMonthGrid();
+
+    // ================================================================
+    // ================ TOP NAVBAR: profil / til / bildirishnoma / chiqish
+    // ================================================================
+    const tbBackdrop = document.getElementById('tb-backdrop');
+    const tbTriggers = document.querySelectorAll('[data-pop]');
+    let openPopId = null;
+
+    function closePop() {
+        if (!openPopId) return;
+        document.getElementById(openPopId).classList.remove('open');
+        tbTriggers.forEach(t => t.setAttribute('aria-expanded', 'false'));
+        tbBackdrop.classList.remove('show');
+        openPopId = null;
+    }
+
+    function openPop(id) {
+        closePop();
+        const pop = document.getElementById(id);
+        pop.classList.add('open');
+        document.querySelector(`[data-pop="${id}"]`).setAttribute('aria-expanded', 'true');
+        tbBackdrop.classList.add('show');
+        openPopId = id;
+        const focusable = pop.querySelector('button, a');
+        if (focusable) focusable.focus({ preventScroll: true });
+    }
+
+    tbTriggers.forEach(t => t.addEventListener('click', () => {
+        const id = t.dataset.pop;
+        openPopId === id ? closePop() : openPop(id);
+    }));
+    tbBackdrop.addEventListener('click', closePop);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePop(); });
+
+    // navbar scroll bo'lganda pastki chegarasi paydo bo'ladi
+    const topbarEl = document.getElementById('topbar');
+    window.addEventListener('scroll', () => topbarEl.classList.toggle('scrolled', window.scrollY > 4), { passive: true });
+
+    // profil paneli: guruhlar ro'yxati (desktop'dagi dropdown bilan bir xil manba)
+    // guruhlar backend'dan massiv bo'lib keladi: faqat birinchisi ko'rinadi,
+    // bosilganda qolganlari ostidan ochiladi
+    const [mainGroup, ...otherGroups] = studentGroups;
+    document.getElementById('pp-group-main').textContent = mainGroup ? mainGroup.name : '—';
+    const ppToggle = document.getElementById('pp-group-toggle');
+    const ppMore = document.getElementById('pp-group-more');
+    if (otherGroups.length) {
+        document.getElementById('pp-group-count').textContent = `+${otherGroups.length}`;
+        ppMore.innerHTML = otherGroups.map(g => `<div class="pp-group-item">${g.name}</div>`).join('');
+        ppToggle.addEventListener('click', () => {
+            const open = ppToggle.getAttribute('aria-expanded') !== 'true';
+            ppToggle.setAttribute('aria-expanded', open);
+            ppMore.hidden = !open;
+        });
+    } else {
+        ppToggle.disabled = true;
+        ppToggle.querySelector('.pp-chev').style.display = 'none';
+    }
+
+    // til tanlash — haqiqiy tarjima uchun 'lms:langchange' hodisasini tinglang
+    document.querySelectorAll('.lang-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+            const lang = opt.dataset.lang;
+            document.querySelectorAll('.lang-opt').forEach(o => o.setAttribute('aria-checked', o === opt));
+            document.getElementById('tb-lang-label').textContent = lang.toUpperCase();
+            document.documentElement.lang = lang;
+            window.dispatchEvent(new CustomEvent('lms:langchange', { detail: { lang } }));
+            closePop();
+        });
+    });
+
+    // bildirishnomalar: "Hammasi o'qildi"
+    document.getElementById('notif-read-all').addEventListener('click', () => {
+        document.querySelectorAll('#pop-notif .notif-item.unread').forEach(n => n.classList.remove('unread'));
+        document.getElementById('tb-notif-badge').hidden = true;
+    });
+
+    // chiqish
+    const LOGOUT_URL = '/logout'; // TODO: backend'dagi haqiqiy logout endpoint
+    document.getElementById('logout-cancel').addEventListener('click', closePop);
+    document.getElementById('logout-confirm').addEventListener('click', () => {
+        // token/sessiyani tozalash shu yerda (masalan, refresh tokenni bekor qilish so'rovi)
+        window.location.href = LOGOUT_URL;
+    });
+
+    showPage('page-dashboard');
 
     // ================================================================
     // ============================ QR SKANER =========================
