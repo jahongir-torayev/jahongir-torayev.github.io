@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Bosh sahifa — PDP LMS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1901,6 +1901,15 @@
     .att-sum-pct b small { font-size: 24px; margin-left: 2px; }
     .att-state { font-size: 12px; font-weight: 700; padding: 5px 11px; border-radius: var(--r-pill); margin-bottom: 4px; }
 
+    .att-sum-row { display: flex; align-items: center; gap: 14px; }
+    .att-sum-body { min-width: 0; flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .att-sum-body .t { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 18px; line-height: 1.2; letter-spacing: -.01em; }
+    .att-sum-body .s { font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: -3px; }
+    .att-sum-body .att-bar { width: 100%; margin-top: 2px; }
+    .att-sum-body .att-state { margin: 0; font-size: 11.5px; padding: 3px 9px; }
+    .att-pct.lg { width: 76px; height: 76px; border-radius: 20px; font-size: 24px; }
+    .att-pct.lg small { font-size: 14px; }
+
     .att-bar {
         position: relative;
         height: 6px;
@@ -2582,6 +2591,8 @@
             user-select: none;
             -webkit-touch-callout: none;
         }
+        /* ikki barmoq bilan kattalashtirish va ikki marta bosib zoom qilish o'chiriladi */
+        html, body { touch-action: pan-x pan-y; }
         input, textarea, [contenteditable="true"] {
             -webkit-user-select: text;
             user-select: text;
@@ -3402,7 +3413,7 @@
     // ================================================================
     // ===== DAVOMAT SAHIFASI: modullar → oylar → kunlar (drill-down) =====
     // ================================================================
-    const MIN_ATTENDANCE = 80; // shundan past bo'lsa "Davomat yetarli emas"
+    const MIN_ATTENDANCE = 75; // faqat shundan past bo'lsa "Yetarli emas"
     const ATT = {
         present: { label: 'Kelgan',        color: 'var(--success)', soft: 'var(--success-soft)' },
         late:    { label: 'Kechikkan',     color: 'var(--warn)',    soft: 'var(--warn-soft)' },
@@ -3511,7 +3522,6 @@
     const barHtml = (pct, big) => `
         <div class="att-bar${big ? ' big' : ''}">
             <i style="width:${pct}%;background:${tone(pct).c}"></i>
-            <span class="mk" style="left:${MIN_ATTENDANCE}%"></span>
         </div>`;
 
     // bitta guruh ichidagi qator: chapda foiz, o'rtada nom + progress, o'ngda statistika tugmasi
@@ -3529,7 +3539,6 @@
                             <span class="meta">
                                 ${meta ? `<span>${meta}</span>` : ''}
                                 ${pct < MIN_ATTENDANCE ? `<span class="low">${icAlert}Yetarli emas</span>` : ''}
-                                <span class="go">${goLabel}${chevR}</span>
                             </span>
                         </span>
                     </button>
@@ -3564,16 +3573,14 @@
         const open = attState.detailOpen;
         const t = tone(pct);
         return `
-            <div class="att-sum-head">
-                <div class="t">${title}</div>
-                <div class="s">${sub}</div>
+            <div class="att-sum-row">
+                <span class="att-pct lg" style="--c:${t.c};--s:${t.s}">${pct}<small>%</small></span>
+                <div class="att-sum-body">
+                    <div class="t">${title}</div>
+                    <div class="s">${sub}</div>
+                    ${barHtml(pct, true)}
+                </div>
             </div>
-            <div class="att-sum-pct">
-                <b style="color:${t.c}">${pct}<small>%</small></b>
-                <span class="att-state" style="background:${t.s};color:${t.c}">${pct >= MIN_ATTENDANCE ? 'Yetarli' : 'Yetarli emas'}</span>
-            </div>
-            ${barHtml(pct, true)}
-            <div class="att-bar-cap"><span>Davomat</span><span>Minimal: ${MIN_ATTENDANCE}%</span></div>
             <button class="gr-stats-toggle" type="button" id="att-toggle" aria-expanded="${open}" aria-controls="att-detail">
                 <span>${open ? 'Yopish' : "Batafsil ko'rish"}</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -4235,6 +4242,15 @@
     // ========== MOBIL: nusxa olish va uzoq bosish menyusini cheklash ==========
     // ================================================================
     const isMobileView = window.matchMedia('(max-width: 768px)');
+
+    // pinch-zoom'ni cheklash: iOS Safari viewport'dagi user-scalable=no ni e'tiborsiz qoldiradi,
+    // shuning uchun gesture va ikki barmoqli touch hodisalari ham to'xtatiladi
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach(evt =>
+        document.addEventListener(evt, e => e.preventDefault(), { passive: false }));
+    document.addEventListener('touchmove', e => {
+        if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    // ikki marta bosib zoom qilish CSS'dagi touch-action orqali o'chirilgan
     ['copy', 'cut', 'contextmenu'].forEach(evt => {
         document.addEventListener(evt, e => {
             if (!isMobileView.matches) return;
