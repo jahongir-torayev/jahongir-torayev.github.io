@@ -1663,6 +1663,130 @@
         letter-spacing: 0;
     }
 
+    /* ================= KALENDAR: sarlavha + oy almashtirish ================= */
+    .cal-card-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .cal-card-sub { font-size: 12.5px; font-weight: 600; color: var(--muted); margin-top: 3px; }
+
+    .cal-switch { display: flex; gap: 6px; flex: none; }
+
+    .cal-sw-btn {
+        appearance: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform .12s ease, background .15s ease;
+    }
+
+    @media (hover: hover) { .cal-sw-btn:hover { background: var(--accent-soft); color: var(--success); } }
+    .cal-sw-btn:active { transform: scale(.92); }
+
+    /* ---- Kalendar sahifasi: kun darslari ro'yxati ---- */
+    .cal-switch { align-items: center; }
+
+    /* tanlangan kun darslari */
+    .cal2-day { padding: 18px 16px; }
+
+    .cal2-day-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .cal2-day-head .t { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 20px; line-height: 1.2; }
+    .cal2-day-head .s { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 2px; }
+
+    .cal2-count {
+        flex: none;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink-soft);
+        background: var(--bg);
+        padding: 5px 10px;
+        border-radius: var(--r-pill);
+    }
+    .cal2-count[hidden] { display: none; }
+
+    .cal2-lessons { display: flex; flex-direction: column; gap: 8px; }
+
+    .cal2-lesson {
+        display: flex;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px 12px 12px 10px;
+        border-radius: 14px;
+        background: var(--bg);
+    }
+
+    .cal2-lesson .tm {
+        width: 44px;
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-family: 'JetBrains Mono', monospace;
+        line-height: 1.35;
+    }
+    .cal2-lesson .tm b { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .cal2-lesson .tm span { font-size: 11.5px; color: var(--muted); }
+
+    .cal2-lesson .line { width: 3px; border-radius: 2px; background: var(--accent); flex: none; }
+    .cal2-lesson .line.online { background: var(--info); }
+
+    .cal2-lesson .body { min-width: 0; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .cal2-lesson .n { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 14px; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cal2-lesson .m { font-size: 12px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+    .cal2-lesson .room {
+        align-self: center;
+        flex: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11.5px;
+        font-weight: 700;
+        padding: 4px 9px;
+        border-radius: var(--r-pill);
+        background: var(--surface);
+        color: var(--ink-soft);
+    }
+    .cal2-lesson .room.online { background: var(--info-soft); color: var(--info); }
+
+    .cal2-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 18px 0 8px;
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--muted);
+    }
+    .cal2-empty .ic {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     /* ================= DAVOMAT SAHIFASI ================= */
     .att-nav {
         display: flex;
@@ -1671,6 +1795,8 @@
         min-height: 40px;
         margin-bottom: 10px;
     }
+
+    .att-nav:empty { display: none; }
 
     .att-back {
         appearance: none;
@@ -1765,6 +1891,137 @@
     .att-hl-bad .att-hl-pct { color: var(--danger); }
 
     .att-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+
+    /* ---- Davomat: yangi summary ---- */
+    .att-sum-head .t { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 20px; line-height: 1.2; letter-spacing: -.01em; }
+    .att-sum-head .s { font-size: 12.5px; color: var(--muted); font-weight: 500; margin-top: 3px; }
+
+    .att-sum-pct { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: 14px 0 10px; }
+    .att-sum-pct b { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 46px; line-height: .9; letter-spacing: -.03em; }
+    .att-sum-pct b small { font-size: 24px; margin-left: 2px; }
+    .att-state { font-size: 12px; font-weight: 700; padding: 5px 11px; border-radius: var(--r-pill); margin-bottom: 4px; }
+
+    .att-bar {
+        position: relative;
+        height: 6px;
+        border-radius: var(--r-pill);
+        background: var(--neutral-soft);
+    }
+    .att-bar.big { height: 10px; }
+    .att-bar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: var(--r-pill); }
+    .att-bar .mk {
+        position: absolute;
+        top: -3px;
+        bottom: -3px;
+        width: 2px;
+        margin-left: -1px;
+        border-radius: 1px;
+        background: var(--ink);
+        opacity: .35;
+    }
+
+    .att-bar-cap { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--muted); margin-top: 6px; }
+
+    /* ---- Davomat: guruhlangan ro'yxat ---- */
+    .att-group {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .att-group-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px 10px;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+    }
+
+    .att-group-head .c {
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink-soft);
+        background: var(--bg);
+        padding: 3px 9px;
+        border-radius: var(--r-pill);
+    }
+
+    .att-li { border-top: 1px solid var(--line); }
+    .att-li.open { background: #FAFAFC; }
+
+    .att-li-main { display: flex; align-items: center; }
+
+    .att-li-go {
+        appearance: none;
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 4px 14px 14px;
+        border: none;
+        background: none;
+        text-align: left;
+        font-family: inherit;
+        color: var(--ink);
+        cursor: pointer;
+    }
+
+    .att-li-go:active { background: var(--bg); }
+
+    .att-pct {
+        flex: none;
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        background: var(--s);
+        color: var(--c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Manrope', sans-serif;
+        font-weight: 800;
+        font-size: 19px;
+        letter-spacing: -.02em;
+    }
+    .att-pct small { font-size: 12px; margin-left: 1px; }
+
+    .att-li-body { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 7px; }
+    .att-li-body .n { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 15.5px; line-height: 1.25; }
+
+    .att-li-body .meta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; font-size: 11.5px; font-weight: 600; color: var(--muted); }
+    .att-li-body .meta .low { display: inline-flex; align-items: center; gap: 3px; color: var(--danger); }
+    .att-li-body .meta .low svg { width: 12px; height: 12px; }
+    .att-li-body .meta .go { display: inline-flex; align-items: center; gap: 1px; color: var(--success); font-weight: 700; margin-left: auto; }
+    .att-li-body .meta .go svg { width: 14px; height: 14px; }
+
+    .att-li-stat {
+        appearance: none;
+        flex: none;
+        width: 40px;
+        height: 40px;
+        margin: 0 12px 0 8px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        color: var(--ink-soft);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background .15s ease, color .15s ease;
+    }
+
+    .att-li.open .att-li-stat { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+    .att-li-stats { padding: 0 14px 14px; animation: grFade .2s ease; }
+    .att-li-stats[hidden] { display: none; }
+    .att-li-stats .att-cnt.zero { background: var(--surface); }
 
     /* 5 ta count — bitta qatorda */
     .att-counts { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; }
@@ -2599,12 +2856,32 @@
     <div class="app-page" id="page-calendar">
 
         <div class="card">
-            <div class="card-title">Oy ko'rinishi</div>
+            <div class="cal-card-head">
+                <div>
+                    <div class="card-title" style="margin:0;">Kalendar</div>
+                    <div class="cal-card-sub" id="cal-view-label" aria-live="polite"></div>
+                </div>
+                <div class="cal-switch">
+                    <button type="button" class="cal-sw-btn" id="cal-prev" aria-label="Oldingi oy">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                    <button type="button" class="cal-sw-btn" id="cal-next" aria-label="Keyingi oy">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="month-grid-names" aria-hidden="true"><span>dush</span><span>sesh</span><span>chor</span><span>pay</span><span>jum</span><span>shan</span><span>yak</span></div>
             <div class="month-grid" id="month-grid"></div>
         </div>
 
-        <div class="card">
-            <div class="card-title" id="day-detail-title">Bugungi darslar</div>
+        <div class="card cal2-day">
+            <div class="cal2-day-head">
+                <div>
+                    <div class="t" id="day-detail-title">Bugungi darslar</div>
+                    <div class="s" id="day-detail-sub"></div>
+                </div>
+                <span class="cal2-count" id="day-detail-count"></span>
+            </div>
             <div id="day-detail-list"></div>
         </div>
     </div>
@@ -3225,28 +3502,50 @@
         </div>`).join('')}</div>`;
 
     // modul / oy kartasi: halqa yonida nom, pastda "Statistika" (accordion) va drill-down tugmasi
-    function listCard({ key, idx, name, pct, counts, goAttr, goLabel }) {
+    // foizga qarab ohang: yaxshi / o'rtacha / past
+    const tone = pct => pct >= MIN_ATTENDANCE ? { c: 'var(--success)', s: 'var(--success-soft)', k: 'ok' }
+        : pct >= 60 ? { c: 'var(--warn)', s: 'var(--warn-soft)', k: 'mid' }
+        : { c: 'var(--danger)', s: 'var(--danger-soft)', k: 'low' };
+
+    // gorizontal progress + minimal chegara belgisi
+    const barHtml = (pct, big) => `
+        <div class="att-bar${big ? ' big' : ''}">
+            <i style="width:${pct}%;background:${tone(pct).c}"></i>
+            <span class="mk" style="left:${MIN_ATTENDANCE}%"></span>
+        </div>`;
+
+    // bitta guruh ichidagi qator: chapda foiz, o'rtada nom + progress, o'ngda statistika tugmasi
+    function listRow({ key, idx, name, meta, pct, counts, goAttr, goLabel }) {
         const open = attState.openCard === key;
+        const t = tone(pct);
         return `
-            <div class="att-row${open ? ' open' : ''}">
-                <div class="att-row-top">
-                    ${ringBlock(pct, 56, 6)}
-                    <div class="att-row-body">
-                        <div class="att-row-name">${name}</div>
-                        ${pct < MIN_ATTENDANCE ? `<span class="att-warn">${icAlert}Davomat yetarli emas</span>` : ''}
-                    </div>
-                </div>
-                <div class="att-row-stats" id="stats-${key}" ${open ? '' : 'hidden'}>${countsHtml(counts)}</div>
-                <div class="att-row-actions">
-                    <button class="att-stat-btn" type="button" data-stat="${key}" aria-expanded="${open}" aria-controls="stats-${key}">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M5 20V11M12 20V4M19 20v-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                        Statistika
-                        <svg class="chev" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="att-li${open ? ' open' : ''}">
+                <div class="att-li-main">
+                    <button class="att-li-go" type="button" ${goAttr}="${idx}">
+                        <span class="att-pct" style="--c:${t.c};--s:${t.s}">${pct}<small>%</small></span>
+                        <span class="att-li-body">
+                            <span class="n">${name}</span>
+                            ${barHtml(pct)}
+                            <span class="meta">
+                                ${meta ? `<span>${meta}</span>` : ''}
+                                ${pct < MIN_ATTENDANCE ? `<span class="low">${icAlert}Yetarli emas</span>` : ''}
+                                <span class="go">${goLabel}${chevR}</span>
+                            </span>
+                        </span>
                     </button>
-                    <button class="att-go-btn" type="button" ${goAttr}="${idx}">${goLabel}${chevR}</button>
+                    <button class="att-li-stat" type="button" data-stat="${key}" aria-expanded="${open}" aria-controls="stats-${key}" aria-label="${name.replace(/<[^>]+>/g, '')} statistikasi">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 20V11M12 20V4M19 20v-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+                    </button>
                 </div>
+                <div class="att-li-stats" id="stats-${key}" ${open ? '' : 'hidden'}>${countsHtml(counts)}</div>
             </div>`;
     }
+
+    const groupHtml = (title, count, rows) => `
+        <div class="att-group">
+            <div class="att-group-head"><span>${title}</span><span class="c">${count}</span></div>
+            ${rows}
+        </div>`;
 
     const icTrophy = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 4h8v5a4 4 0 01-8 0V4zM8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3M12 13v4M9 20h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const icAlert = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4.5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
@@ -3263,14 +3562,18 @@
 
     function summaryCard({ pct, title, sub, highlights, counts }) {
         const open = attState.detailOpen;
+        const t = tone(pct);
         return `
-            <div class="att-sum-top">
-                ${ringBlock(pct, 84, 9, 'lg')}
-                <div class="att-sum-txt">
-                    <div class="t">${title}</div>
-                    <div class="s">${sub}</div>
-                </div>
+            <div class="att-sum-head">
+                <div class="t">${title}</div>
+                <div class="s">${sub}</div>
             </div>
+            <div class="att-sum-pct">
+                <b style="color:${t.c}">${pct}<small>%</small></b>
+                <span class="att-state" style="background:${t.s};color:${t.c}">${pct >= MIN_ATTENDANCE ? 'Yetarli' : 'Yetarli emas'}</span>
+            </div>
+            ${barHtml(pct, true)}
+            <div class="att-bar-cap"><span>Davomat</span><span>Minimal: ${MIN_ATTENDANCE}%</span></div>
             <button class="gr-stats-toggle" type="button" id="att-toggle" aria-expanded="${open}" aria-controls="att-detail">
                 <span>${open ? 'Yopish' : "Batafsil ko'rish"}</span>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -3299,7 +3602,7 @@
             const all = sumCounts(attData);
             const { best, worst } = bestWorst(items);
 
-            navEl.innerHTML = `<div class="att-crumbs"><span class="cur">Modullar</span></div>`;
+            navEl.innerHTML = '';
             sumEl.innerHTML = summaryCard({
                 pct: pctOf(all),
                 title: "Semestr bo'yicha davomat",
@@ -3309,10 +3612,10 @@
                     hlRow(icTrophy, 'good', "Eng ko'p qatnashilgan fan", best.name, best.pct + '%') +
                     hlRow(icAlert, 'bad', 'Eng kam qatnashilgan fan', worst.name, worst.pct + '%')
             });
-            bodyEl.innerHTML = `<div class="att-list">${items.map(it => listCard({
+            bodyEl.innerHTML = groupHtml('Modullar', items.length, items.map(it => listRow({
                 key: 'm' + it.i, idx: it.i, name: it.name, pct: it.pct, counts: sumCounts([attData[it.i]]),
-                goAttr: 'data-mod', goLabel: "Oylarni ko'rish"
-            })).join('')}</div>`;
+                goAttr: 'data-mod', goLabel: "Oylar"
+            })).join(''));
         }
 
         if (attState.level === 'months') {
@@ -3330,10 +3633,10 @@
                     hlRow(icTrophy, 'good', 'Eng yaxshi oy', best.name, best.pct + '%') +
                     hlRow(icAlert, 'bad', 'Eng yomon oy', worst.name, worst.pct + '%')
             });
-            bodyEl.innerHTML = `<div class="att-list">${items.map(it => listCard({
-                key: 'o' + it.i, idx: it.i, name: `${it.name} <small>${it.lessons} ta dars</small>`, pct: it.pct,
-                counts: mod.months[it.i].counts, goAttr: 'data-month', goLabel: "Kunlarni ko'rish"
-            })).join('')}</div>`;
+            bodyEl.innerHTML = groupHtml('Oylar', items.length, items.map(it => listRow({
+                key: 'o' + it.i, idx: it.i, name: it.name, meta: `${it.lessons} ta dars`, pct: it.pct,
+                counts: mod.months[it.i].counts, goAttr: 'data-month', goLabel: "Kunlar"
+            })).join(''));
         }
 
         if (attState.level === 'days') {
@@ -3377,7 +3680,6 @@
                         <div><div class="d">${attState.day}-${monthsUz[mm.m].toLowerCase()}</div><div class="w">${weekUzFull[selWd]}</div></div>
                         <span class="att-st" style="background:${ATT[selSt].soft};color:${ATT[selSt].color}">${ATT[selSt].label}</span>
                     </div>` : ''}
-                    <div class="att-cal-legend">${ATT_KEYS.map(k => `<span><i style="background:${ATT[k].color}"></i>${ATT[k].label}</span>`).join('')}</div>
                 </div>`;
         }
     }
@@ -3638,68 +3940,100 @@
         15: 3, 16: 3, 17: 2, 18: 2, 19: 3, 22: 3, 23: 2, 24: 3, 25: 3, 26: 2
     };
 
+    // oy almashtirish: ko'rilayotgan oy holati
+    let calView = { y: today.getFullYear(), m: today.getMonth() };
+    let calSelected = today.getDate();
+
+    const isCurrentMonth = () => calView.y === today.getFullYear() && calView.m === today.getMonth();
+    // demo: joriy oy uchun monthLessonsMap, boshqa oylar uchun hafta kuniga qarab
+    function lessonCountFor(d) {
+        if (isCurrentMonth()) return monthLessonsMap[d] || 0;
+        const wd = (new Date(calView.y, calView.m, d).getDay() + 6) % 7;
+        return lessonCounts[wd] || 0;
+    }
+
+    const weekFull = ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
+    const capMonth = m => monthNames[m].charAt(0).toUpperCase() + monthNames[m].slice(1);
+
     function buildMonthGrid() {
         const grid = document.getElementById('month-grid');
         if (!grid) return;
 
-        const year = today.getFullYear();
-        const month = today.getMonth();
-        const firstOfMonth = new Date(year, month, 1);
-        const startOffset = (firstOfMonth.getDay() + 6) % 7; // dushanbadan boshlab
+        const { y: year, m: month } = calView;
+        const startOffset = (new Date(year, month, 1).getDay() + 6) % 7; // dushanbadan boshlab
         const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-        const namesRow = document.createElement('div');
-        namesRow.className = 'month-grid-names';
-        namesRow.innerHTML = dayNames.map(d => `<span>${d}</span>`).join('');
-        grid.parentElement.insertBefore(namesRow, grid);
+        document.getElementById('cal-view-label').textContent = `${capMonth(month)} ${year}`;
 
-        for (let i = 0; i < startOffset; i++) {
-            const empty = document.createElement('div');
-            empty.className = 'month-cell empty';
-            grid.appendChild(empty);
-        }
-
+        let html = '';
+        for (let i = 0; i < startOffset; i++) html += '<div class="month-cell empty"></div>';
         for (let d = 1; d <= daysInMonth; d++) {
-            const cell = document.createElement('div');
-            const isToday = d === today.getDate();
-            const count = monthLessonsMap[d] || 0;
-            cell.className = 'month-cell' + (isToday ? ' today' : '');
-            cell.dataset.day = d;
-            cell.innerHTML = `${d}` + (count > 0 ? '<span class="dot"></span>' : '');
-            cell.addEventListener('click', () => selectMonthDay(d, count));
-            grid.appendChild(cell);
+            const count = lessonCountFor(d);
+            const isToday = isCurrentMonth() && d === today.getDate();
+            html += `<div class="month-cell${isToday ? ' today' : ''}${d === calSelected ? ' selected' : ''}" data-day="${d}">${d}${count > 0 ? '<span class="dot"></span>' : ''}</div>`;
         }
-
-        selectMonthDay(today.getDate(), monthLessonsMap[today.getDate()] || 0);
+        grid.innerHTML = html;
+        selectMonthDay(Math.min(calSelected, daysInMonth), true);
     }
 
-    function selectMonthDay(day, count) {
-        document.querySelectorAll('.month-cell').forEach(c => {
-            c.classList.toggle('selected', Number(c.dataset.day) === day);
-        });
+    function selectMonthDay(day, skipGrid) {
+        calSelected = day;
+        if (!skipGrid) {
+            document.querySelectorAll('#month-grid .month-cell[data-day]').forEach(c => {
+                c.classList.toggle('selected', Number(c.dataset.day) === day);
+            });
+        }
+        const count = lessonCountFor(day);
         const titleEl = document.getElementById('day-detail-title');
+        const subEl = document.getElementById('day-detail-sub');
+        const countEl = document.getElementById('day-detail-count');
         const listEl = document.getElementById('day-detail-list');
         if (!titleEl || !listEl) return;
 
-        const isToday = day === today.getDate();
-        titleEl.textContent = isToday ? "Bugungi darslar" : `${day}-${monthNames[today.getMonth()]} darslari`;
+        const isToday = isCurrentMonth() && day === today.getDate();
+        const wd = (new Date(calView.y, calView.m, day).getDay() + 6) % 7;
+        titleEl.textContent = isToday ? 'Bugun' : `${day}-${monthNames[calView.m]}`;
+        subEl.textContent = isToday ? `${weekFull[wd]}, ${day}-${monthNames[calView.m]}` : weekFull[wd];
+        countEl.textContent = count ? `${count} ta dars` : '';
+        countEl.hidden = !count;
 
         if (count > 0) {
             const items = lessons.slice(0, Math.min(count, lessons.length));
-            listEl.innerHTML = items.map(l => `
-                <div class="att-item">
-                    <div class="subj-ic" style="width:36px;height:36px;border-radius:10px;">${ICONS[l.icon]}</div>
-                    <div class="att-body" style="margin-left:2px;">
-                        <div class="att-title">${l.name}</div>
-                        <div class="att-time">${l.mentor} · ${l.room}</div>
+            listEl.innerHTML = `<div class="cal2-lessons">${items.map(l => `
+                <div class="cal2-lesson">
+                    <div class="tm"><b>${fmtMin(l.startMin)}</b><span>${fmtMin(l.endMin)}</span></div>
+                    <div class="line ${l.type}"></div>
+                    <div class="body">
+                        <div class="n">${l.name}</div>
+                        <div class="m">${l.mentor}</div>
                     </div>
-                    <div class="att-badge present" style="background:var(--info-soft);color:var(--info);">${fmtMin(l.startMin)}</div>
-                </div>
-            `).join('');
+                    <span class="room ${l.type}">${l.type === 'online' ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><rect x="2.5" y="6" width="13" height="12" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M15.5 10.5l6-3.5v10l-6-3.5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>` : ''}${l.room}</span>
+                </div>`).join('')}</div>`;
         } else {
-            listEl.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px 0;">Bu kunga darslar mavjud emas</div>`;
+            listEl.innerHTML = `
+                <div class="cal2-empty">
+                    <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15.5" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4M9.5 14.5l5 3M14.5 14.5l-5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                    Bu kunda dars yo'q
+                </div>`;
         }
     }
+
+    document.getElementById('month-grid').addEventListener('click', e => {
+        const cell = e.target.closest('.month-cell[data-day]');
+        if (cell) selectMonthDay(Number(cell.dataset.day));
+    });
+
+    function shiftMonth(delta) {
+        const d = new Date(calView.y, calView.m + delta, 1);
+        calView = { y: d.getFullYear(), m: d.getMonth() };
+        // joriy oyga qaytganda bugun, boshqa oylarda 1-kun tanlanadi
+        calSelected = isCurrentMonth() ? today.getDate() : 1;
+        buildMonthGrid();
+    }
+
+    document.getElementById('cal-prev').addEventListener('click', () => shiftMonth(-1));
+    document.getElementById('cal-next').addEventListener('click', () => shiftMonth(1));
+
 
     buildMonthGrid();
 
